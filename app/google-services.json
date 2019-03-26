@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "692412006500",
+    "firebase_url": "https://patientapp-57109.firebaseio.com",
+    "project_id": "patientapp-57109",
+    "storage_bucket": "patientapp-57109.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:692412006500:android:d3206fbde1ecdb76",
+        "android_client_info": {
+          "package_name": "app.food.patient_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "692412006500-dmulds7elc41l4qc63oa6en01tp13kve.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCNV4DvB2BA1SJkyHfaYOsbPJ7CO1XCXUo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

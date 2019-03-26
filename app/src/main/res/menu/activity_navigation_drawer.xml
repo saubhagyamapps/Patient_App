@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_manage"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Tools" />
+        <item
+            android:id="@+id/nav_calendar"
+            android:icon="@drawable/calendar"
+            android:title="Calendar" />
+        <item
+            android:id="@+id/nav_calllogs"
+            android:icon="@drawable/call_logs"
+            android:title="Social Interaction" />
+        <item
+            android:id="@+id/nav_socialapp"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="App Usage" />
+        <item
+            android:id="@+id/nav_googlefit"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="Fitness data" />
+
+    </group>
+
+    <item android:title="Settings">
+        <menu>
+            <item
+                android:id="@+id/nav_editprofile"
+                android:icon="@drawable/profilesettings"
+                android:title="Profile Setting" />
+            <item
+                android:id="@+id/nav_resetpassword"
+                android:icon="@drawable/resetpassword"
+                android:title="Reset Password" />
+            <item
+                android:id="@+id/nav_logout"
+                android:icon="@drawable/logout"
+                android:title="Logout" />
+        </menu>
+    </item>
+
+</menu>
