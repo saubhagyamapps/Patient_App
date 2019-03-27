@@ -1,12 +1,13 @@
 package app.food.patient_app.fragment;
 
-import android.content.Context;
+
 import android.content.IntentSender;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,23 +18,29 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.fitness.Fitness;
+import com.google.android.gms.fitness.FitnessActivities;
 import com.google.android.gms.fitness.data.Bucket;
 import com.google.android.gms.fitness.data.DataPoint;
 import com.google.android.gms.fitness.data.DataSet;
 import com.google.android.gms.fitness.data.DataSource;
 import com.google.android.gms.fitness.data.DataType;
 import com.google.android.gms.fitness.data.Field;
+import com.google.android.gms.fitness.data.Session;
 import com.google.android.gms.fitness.data.Value;
 import com.google.android.gms.fitness.request.DataReadRequest;
 import com.google.android.gms.fitness.request.DataSourcesRequest;
 import com.google.android.gms.fitness.request.OnDataPointListener;
 import com.google.android.gms.fitness.request.SensorRequest;
+import com.google.android.gms.fitness.request.SessionInsertRequest;
+import com.google.android.gms.fitness.request.SessionReadRequest;
 import com.google.android.gms.fitness.result.DataReadResult;
 import com.google.android.gms.fitness.result.DataSourcesResult;
+import com.google.android.gms.fitness.result.SessionReadResult;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 
@@ -50,6 +57,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import app.food.patient_app.R;
+import app.food.patient_app.adapter.GoogleFitAdapter;
 import app.food.patient_app.model.ArrayListGoogleFitModel;
 import app.food.patient_app.model.CaloriesDataModel;
 import app.food.patient_app.model.GetCaloriesModel;
@@ -75,11 +83,13 @@ public class GoogleFitDataFragment extends Fragment implements OnDataPointListen
     ArrayListGoogleFitModel googleFitJsonModel;
     private List<ArrayListGoogleFitModel> arrayListGoogleFitModelList;
     JSONObject singObj;
-   // GoogleFitAdapter googleFitAdapter;
+    GoogleFitAdapter googleFitAdapter;
     List<GetGooGleFitActivityModel> getGooGleFitActivityModels;
-    TextView txt_Date, txt_Activity_Name, txt_Duration, txt_Calories;
+    TextView txt_Calories;
     String fieldName;
     String fieldvalue;
+    RecyclerView recyclerView_google_fit;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -94,12 +104,11 @@ public class GoogleFitDataFragment extends Fragment implements OnDataPointListen
         return mView;
     }
 
-    private void initialize()
-    {
-        txt_Calories = mView.findViewById(R.id.txt_todays_calories);
-        txt_Date = mView.findViewById(R.id.txt_fit_date);
-        txt_Activity_Name = mView.findViewById(R.id.txt_fit_activity_name);
-        txt_Duration = mView.findViewById(R.id.txt_fit_duration);
+    private void initialize() {
+        txt_Calories = mView.findViewById(R.id.txt_calories);
+        recyclerView_google_fit = mView.findViewById(R.id.google_fit_recycleview);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        recyclerView_google_fit.setLayoutManager(layoutManager);
         arrayListGoogleFitModelList = new ArrayList<>();
         todayDate = Calendar.getInstance().getTime();
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
@@ -109,6 +118,7 @@ public class GoogleFitDataFragment extends Fragment implements OnDataPointListen
                 .addApi(Fitness.SENSORS_API)
                 .addApi(Fitness.RECORDING_API)
                 .addApi(Fitness.HISTORY_API)
+                .addApi(Fitness.SESSIONS_API)
                 .addApi(Fitness.CONFIG_API)
                 .addScope(new Scope(Scopes.FITNESS_ACTIVITY_READ))
                 .addScope(new Scope(Scopes.FITNESS_ACTIVITY_READ_WRITE))
@@ -120,11 +130,23 @@ public class GoogleFitDataFragment extends Fragment implements OnDataPointListen
                 .addOnConnectionFailedListener(this)
                 .build();
 
-        getActivityData();
-       // getCaloriestData();
+
+        // getCaloriestData();
     }
+
     @Override
     public void onConnected(@Nullable Bundle bundle) {
+
+        //for Sleep Hours count
+        Calendar cal = Calendar.getInstance();
+        Date now = new Date();
+        cal.setTime(now);
+        long endTime = cal.getTimeInMillis();
+        cal.add(Calendar.DATE, -1);
+        long startTime = cal.getTimeInMillis();
+        java.text.DateFormat dateFormat = DateFormat.getDateInstance();
+        Log.e("History", "Range Start: " + dateFormat.format(startTime));
+        Log.e("History", "Range End: " + dateFormat.format(endTime));
 
         //for Step Count//
         DataSourcesRequest dataSourceRequest = new DataSourcesRequest.Builder()
@@ -164,13 +186,13 @@ public class GoogleFitDataFragment extends Fragment implements OnDataPointListen
 
         //Call History API For Activity Code & Duration//
 
-        Calendar cal = Calendar.getInstance();
-        Date now = new Date();
+        cal = Calendar.getInstance();
+        now = new Date();
         cal.setTime(now);
-        long endTime = cal.getTimeInMillis();
+        endTime = cal.getTimeInMillis();
         cal.add(Calendar.DATE, -1);
-        long startTime = cal.getTimeInMillis();
-        java.text.DateFormat dateFormat = DateFormat.getDateInstance();
+        startTime = cal.getTimeInMillis();
+        dateFormat = DateFormat.getDateInstance();
         Log.e("History", "Range Start: " + dateFormat.format(startTime));
         Log.e("History", "Range End: " + dateFormat.format(endTime));
 
@@ -181,6 +203,7 @@ public class GoogleFitDataFragment extends Fragment implements OnDataPointListen
                 .setTimeRange(startTime, endTime, TimeUnit.MILLISECONDS)
                 .build();
 
+        Log.e(TAG, "onConnected: "+startTime+"--->" +endTime);
         Fitness.HistoryApi.readData(mApiClient, readRequest).setResultCallback(new ResultCallback<DataReadResult>() {
             @Override
             public void onResult(@NonNull DataReadResult dataReadResult) {
@@ -208,8 +231,8 @@ public class GoogleFitDataFragment extends Fragment implements OnDataPointListen
                                     Log.e("History", "\tField: " + field.getName() +
                                             " Value: " + dataPoint.getValue(field));
                                     googleFitJsonModel = new ArrayListGoogleFitModel(fieldName, fieldvalue);
-                                    arrayListGoogleFitModelList.add(googleFitJsonModel);
 
+                                    arrayListGoogleFitModelList.add(googleFitJsonModel);
                                 }
 
                             }
@@ -217,12 +240,13 @@ public class GoogleFitDataFragment extends Fragment implements OnDataPointListen
 
                         }
                     }
+
                     JSONArray contaArray = new JSONArray();
                     for (int i = 0; i < arrayListGoogleFitModelList.size(); i++) {
                         try {
                             singObj = new JSONObject();
-                            singObj.put("field_name", arrayListGoogleFitModelList.get(i).getField_name());
-                            singObj.put("field_value", arrayListGoogleFitModelList.get(i).getField_value());
+                            singObj.put(arrayListGoogleFitModelList.get(i).getField_name(), arrayListGoogleFitModelList.get(i).getField_value());
+                            // singObj.put("", arrayListGoogleFitModelList.get(i).getField_value());
 
 
                             contaArray.put(singObj);
@@ -245,7 +269,6 @@ public class GoogleFitDataFragment extends Fragment implements OnDataPointListen
                 .aggregate(DataType.TYPE_CALORIES_EXPENDED, DataType.AGGREGATE_CALORIES_EXPENDED)
                 .bucketByTime(1, TimeUnit.DAYS)
                 .setTimeRange(startTime, endTime, TimeUnit.MILLISECONDS)
-
                 .build();
         Fitness.HistoryApi.readData(mApiClient, readRequest1).setResultCallback(new ResultCallback<DataReadResult>() {
             @Override
@@ -287,6 +310,7 @@ public class GoogleFitDataFragment extends Fragment implements OnDataPointListen
         });
 
     }
+
     private void registerFitnessDataListener(DataSource dataSource, DataType dataType) {
 
         SensorRequest request = new SensorRequest.Builder()
@@ -337,10 +361,8 @@ public class GoogleFitDataFragment extends Fragment implements OnDataPointListen
                 public void run() {
 
                     Toast.makeText(getActivity(), "Field: " + field.getName() + " Value: " + value, Toast.LENGTH_SHORT).show();
-                    // txt_Activityname_Steps.setText("Activity Type: " +  field.getName() + " " +value);
+
                     String Steps = String.valueOf(value);
-                    //txt_Activity_Date.setText(mCurrentDate);
-                    // InsertGoogleFitData(Steps);
                     Log.e(TAG, "run: " + value);
 
                 }
@@ -349,6 +371,7 @@ public class GoogleFitDataFragment extends Fragment implements OnDataPointListen
 
         }
     }
+
     private void getCaloriestData() {
         Constant.setSession(getActivity());
         Call<GetCaloriesModel> getGoogleFitDataCall = Constant.apiService.getCaloriesData(Constant.mUserId, mCurrentDate);
@@ -359,7 +382,7 @@ public class GoogleFitDataFragment extends Fragment implements OnDataPointListen
                     if (response.body().getStatus().equals("0")) {
                         List<GetCaloriesModel.ResultBean> result = response.body().getResult();
                         Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                        txt_Calories.setText("Total Calories Expended:       " + result.get(0).getCalories());
+                        txt_Calories.setText("Expended Calories :       " + result.get(0).getCalories());
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -373,6 +396,7 @@ public class GoogleFitDataFragment extends Fragment implements OnDataPointListen
             }
         });
     }
+
     private void insertFitData(JsonArray s) {
         Constant.progressDialog(getActivity());
         Constant.setSession(getActivity());
@@ -383,7 +407,7 @@ public class GoogleFitDataFragment extends Fragment implements OnDataPointListen
                 Constant.progressBar.dismiss();
                 Log.e("response", "Getting response from server : " + "Activity Data Inserted Successfully");
                 Log.e(TAG, "onResponse: " + response.message());
-
+                getActivityData();
             }
 
             @Override
@@ -422,33 +446,29 @@ public class GoogleFitDataFragment extends Fragment implements OnDataPointListen
         });
 
     }
+
     private void getActivityData() {
         Constant.setSession(getActivity());
         Call<GetGooGleFitActivityModel> getGooGleFitActivityModelCall = Constant.apiService.getActivityData(Constant.mUserId, mCurrentDate);
         getGooGleFitActivityModelCall.enqueue(new Callback<GetGooGleFitActivityModel>() {
             @Override
             public void onResponse(Call<GetGooGleFitActivityModel> call, Response<GetGooGleFitActivityModel> response) {
-                try {
-                    if (response.body().getStatus().equals("0")) {
-                        if (response.body().getActivity().equals("3")) {
-                            String Activity_code = "Still (Not Moving)";
-                            txt_Activity_Name.setText("Activity Type:          " + Activity_code);
-                        }
-                        long Duration = Long.parseLong(response.body().getDuration());
 
-                        txt_Duration.setText("Activity Duration:        " + String.format(getResources().getString(R.string.total), AppUtil.formatMilliSeconds(Duration)));
-                        txt_Date.setText(response.body().getDate());
+                if (response.body().getStatus().equals("0")) {
+                    List<GetGooGleFitActivityModel.DataBean> dataBeanList = response.body().getData();
+                    googleFitAdapter = new GoogleFitAdapter(getActivity(), dataBeanList);
+                    recyclerView_google_fit.setHasFixedSize(true);
+                    googleFitAdapter.notifyDataSetChanged();
+                    recyclerView_google_fit.setAdapter(googleFitAdapter);
 
-
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
+                } else {
+                    Toast.makeText(getActivity(), "Activity Data Fetch Failed", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<GetGooGleFitActivityModel> call, Throwable t) {
-                Log.e(TAG, "onFailure--->>: " +t.getMessage() );
+                Log.e(TAG, "onFailure--->>: " + t.getMessage());
             }
         });
     }

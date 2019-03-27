@@ -1,26 +1,17 @@
 package app.food.patient_app.model;
 
+import java.util.List;
+
 public class GetGooGleFitActivityModel {
 
 
     /**
      * status : 0
-     * activity : 3
-     * duration : 2249818
-     * date : 2019-03-23
-     * user_id : 20
+     * data : [{"usermanagement_id":4,"date":"2019-03-26","activity":"72","duration":"85356986","num_segments":"1"},{"usermanagement_id":4,"date":"2019-03-26","activity":"3","duration":"1036713","num_segments":"1"},{"usermanagement_id":4,"date":"2019-03-26","activity":"72","duration":"85356986","num_segments":"1"},{"usermanagement_id":4,"date":"2019-03-26","activity":"3","duration":"1036713","num_segments":"1"},{"usermanagement_id":4,"date":"2019-03-26","activity":"72","duration":"74300850","num_segments":"1"},{"usermanagement_id":4,"date":"2019-03-26","activity":"3","duration":"8273555","num_segments":"2"},{"usermanagement_id":4,"date":"2019-03-26","activity":"72","duration":"73992461","num_segments":"1"},{"usermanagement_id":4,"date":"2019-03-26","activity":"3","duration":"8273555","num_segments":"2"},{"usermanagement_id":4,"date":"2019-03-26","activity":"72","duration":"73931860","num_segments":"1"},{"usermanagement_id":4,"date":"2019-03-26","activity":"3","duration":"8273555","num_segments":"2"}]
      */
 
     private String status;
-    private String activity;
-    private String duration;
-    private String date;
-    private int user_id;
-
-    public GetGooGleFitActivityModel(String activity, String duration) {
-        this.activity = activity;
-        this.duration = duration;
-    }
+    private List<DataBean> data;
 
     public String getStatus() {
         return status;
@@ -30,35 +21,67 @@ public class GetGooGleFitActivityModel {
         this.status = status;
     }
 
-    public String getActivity() {
-        return activity;
+    public List<DataBean> getData() {
+        return data;
     }
 
-    public void setActivity(String activity) {
-        this.activity = activity;
+    public void setData(List<DataBean> data) {
+        this.data = data;
     }
 
-    public String getDuration() {
-        return duration;
-    }
+    public static class DataBean {
+        /**
+         * usermanagement_id : 4
+         * date : 2019-03-26
+         * activity : 72
+         * duration : 85356986
+         * num_segments : 1
+         */
 
-    public void setDuration(String duration) {
-        this.duration = duration;
-    }
+        private int usermanagement_id;
+        private String date;
+        private String activity;
+        private String duration;
+        private String num_segments;
 
-    public String getDate() {
-        return date;
-    }
+        public int getUsermanagement_id() {
+            return usermanagement_id;
+        }
 
-    public void setDate(String date) {
-        this.date = date;
-    }
+        public void setUsermanagement_id(int usermanagement_id) {
+            this.usermanagement_id = usermanagement_id;
+        }
 
-    public int getUser_id() {
-        return user_id;
-    }
+        public String getDate() {
+            return date;
+        }
 
-    public void setUser_id(int user_id) {
-        this.user_id = user_id;
+        public void setDate(String date) {
+            this.date = date;
+        }
+
+        public String getActivity() {
+            return activity;
+        }
+
+        public void setActivity(String activity) {
+            this.activity = activity;
+        }
+
+        public String getDuration() {
+            return duration;
+        }
+
+        public void setDuration(String duration) {
+            this.duration = duration;
+        }
+
+        public String getNum_segments() {
+            return num_segments;
+        }
+
+        public void setNum_segments(String num_segments) {
+            this.num_segments = num_segments;
+        }
     }
 }
