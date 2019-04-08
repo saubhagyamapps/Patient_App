@@ -1,5 +1,6 @@
 package app.food.patient_app.receiver;
 
+import android.Manifest;
 import android.app.AlarmManager;
 import android.app.KeyguardManager;
 import android.app.Notification;
@@ -9,17 +10,27 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.database.ContentObserver;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.net.Uri;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.os.Build;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 
@@ -27,17 +38,23 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import app.food.patient_app.R;
 import app.food.patient_app.data.AppItem;
 import app.food.patient_app.data.DataManager;
+import app.food.patient_app.lockscreen.LockService;
+import app.food.patient_app.lockscreen.SharedPrefererenceCounter;
+import app.food.patient_app.model.HomeLocationStoreModel;
 import app.food.patient_app.model.ImageCountModel;
+import app.food.patient_app.model.LocationChgangeModel;
 import app.food.patient_app.model.SocialusageListModel;
 import app.food.patient_app.util.AppUtil;
 import app.food.patient_app.util.Constant;
@@ -55,7 +72,7 @@ import static android.content.Context.ALARM_SERVICE;
 /**
  * AlarmReceiver handles the broadcast message and generates Notification
  */
-public class AlarmReceiver extends BroadcastReceiver {
+public class AlarmReceiver extends BroadcastReceiver{
     private long mTotal;
     String mMessages;
     String mTital;
@@ -63,7 +80,8 @@ public class AlarmReceiver extends BroadcastReceiver {
     SocialusageListModel socialusageListModel;
     private List<SocialusageListModel> array_list;
     JSONObject singObj;
-
+    SharedPrefererenceCounter counter;
+    SharedPreferences sharedPreferences;
     private static final String TAG = "AlarmReceiver";
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -74,18 +92,19 @@ public class AlarmReceiver extends BroadcastReceiver {
         storeSocialTime(context);
         context.getContentResolver().registerContentObserver(ContactsContract.Contacts.CONTENT_URI, true, new MyContentObserver(new Handler(), context));
         lockORunlock(context);
+        requestLocationUpdates(context);
     }
 
     private void lockORunlock(Context context) {
         KeyguardManager myKM = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
-        if( myKM.inKeyguardRestrictedInputMode()) {
+        if (myKM.inKeyguardRestrictedInputMode()) {
             //it is locked
             Toast.makeText(context, "locked", Toast.LENGTH_SHORT).show();
-            Log.e(TAG, "locked:------ >" );
+            Log.e(TAG, "locked:------ >");
         } else {
             //it is not locked
             Toast.makeText(context, "Unlocked", Toast.LENGTH_SHORT).show();
-            Log.e(TAG, "Unlocked:------ >" );
+            Log.e(TAG, "Unlocked:------ >");
         }
     }
 
@@ -136,7 +155,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         Calendar currentCal = Calendar.getInstance();
 
         int mMinute = new Time(System.currentTimeMillis()).getMinutes() + 1;
-     //   int mMinute = new Time(System.currentTimeMillis()).getMinutes();
+        //   int mMinute = new Time(System.currentTimeMillis()).getMinutes();
         int mHour = new Time(System.currentTimeMillis()).getHours();
         int hour = Calendar.getInstance().get(Calendar.HOUR);
         int mSecond = Calendar.getInstance().get(Calendar.SECOND);
@@ -161,7 +180,7 @@ public class AlarmReceiver extends BroadcastReceiver {
             alarmManager.setRepeating(AlarmManager.RTC, intendedTime, AlarmManager.INTERVAL_DAY, pendingIntent1);
         }
 
-        int notifyID = 1;
+      /*  int notifyID = 1;
         String CHANNEL_ID = "my_channel_01";// The id of the channel.
         CharSequence name = "Product";// The user-visible name of the channel.
         int importance = NotificationManager.IMPORTANCE_HIGH;
@@ -180,9 +199,8 @@ public class AlarmReceiver extends BroadcastReceiver {
             mNotificationManager.createNotificationChannel(mChannel);
 
             mNotificationManager.notify(notifyID, notification);
-        }
+        }*/
     }
-
 
 
     private void SocialUsageCall(JsonArray array, Context context) {
@@ -207,6 +225,27 @@ public class AlarmReceiver extends BroadcastReceiver {
             }
         });
 
+    }
+
+    private void StoreHomeAddress(Context context,String address, String LATITUDE, String LONGITUDE) {
+        Date todayDate;
+        String mCurrentDate;
+        todayDate = Calendar.getInstance().getTime();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        mCurrentDate = df.format(todayDate);
+        Constant.setSession(context);
+        Call<HomeLocationStoreModel> storeModelCall=Constant.apiService.storeHomeLocation(Constant.mUserId,mCurrentDate,address,LATITUDE,LONGITUDE);
+        storeModelCall.enqueue(new Callback<HomeLocationStoreModel>() {
+            @Override
+            public void onResponse(Call<HomeLocationStoreModel> call, Response<HomeLocationStoreModel> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<HomeLocationStoreModel> call, Throwable t) {
+
+            }
+        });
     }
 
     public void getFilePaths(Context context) {
@@ -244,14 +283,106 @@ public class AlarmReceiver extends BroadcastReceiver {
         countModelCall.enqueue(new Callback<ImageCountModel>() {
             @Override
             public void onResponse(Call<ImageCountModel> call, Response<ImageCountModel> response) {
-                if (response.body().getStatus().equals("0")) {
-                    Toast.makeText(context, response.body().getResult().get(0).getCount(), Toast.LENGTH_SHORT).show();
+                try {
+                    if (response.body().getStatus().equals("0")) {
+                        Toast.makeText(context, response.body().getResult().get(0).getCount(), Toast.LENGTH_SHORT).show();
+                    }
+                }catch (Exception e){
+
                 }
+
             }
 
             @Override
             public void onFailure(Call<ImageCountModel> call, Throwable t) {
 
+            }
+        });
+    }
+
+    private void requestLocationUpdates(final Context context) {
+        LocationRequest request = new LocationRequest();
+        request.setInterval(3000);
+        request.setFastestInterval(3000);
+        FusedLocationProviderClient client = LocationServices.getFusedLocationProviderClient(context);
+        int permission = ContextCompat.checkSelfPermission(context,
+                Manifest.permission.ACCESS_FINE_LOCATION);
+        if (permission == PackageManager.PERMISSION_GRANTED) {
+
+            client.requestLocationUpdates(request, new LocationCallback() {
+                @Override
+                public void onLocationResult(LocationResult locationResult) {
+                    final Location location = locationResult.getLastLocation();
+                    if (location != null) {
+                        Log.e(TAG, "location update " + location.getLongitude());
+                        Log.e(TAG, "long update " + location.getLongitude());
+                               /* Constant.progressDialog(getActivity());
+                                FLAG = 0;
+                                mStartlatitude = location.getLatitude();
+                                mStartlongitude = location.getLongitude();
+                                getAddress(getActivity(), mStartlatitude, mStartlongitude);*/
+
+                        getAddress(context, location.getLatitude(), location.getLongitude());
+
+                    }
+                }
+            }, null);
+        }
+    }
+
+
+    public void getAddress(Context context, double LATITUDE, double LONGITUDE) {
+
+        //Set Address
+        try {
+            Geocoder geocoder = new Geocoder(context, Locale.ENGLISH);
+            List<Address> addresses = geocoder.getFromLocation(LATITUDE, LONGITUDE, 1);
+            if (addresses != null && addresses.size() > 0) {
+
+
+                String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+                String city = addresses.get(0).getLocality();
+                String state = addresses.get(0).getAdminArea();
+                String country = addresses.get(0).getCountryName();
+                String postalCode = addresses.get(0).getPostalCode();
+                String knownName = addresses.get(0).getFeatureName(); // Only if available else return NULL
+
+                Log.d(TAG, "getAddress:  address" + address);
+                Log.d(TAG, "getAddress:  city" + city);
+                Log.d(TAG, "getAddress:  state" + state);
+                Log.d(TAG, "getAddress:  postalCode" + postalCode);
+                Log.d(TAG, "getAddress:  knownName" + knownName);
+
+                LocationChangeAPICALL(context, address.replace(state+postalCode+","+country,""), LATITUDE, LONGITUDE);
+                StoreHomeAddress(context,address, String.valueOf(LATITUDE),String.valueOf(LONGITUDE));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return;
+    }
+
+    private void LocationChangeAPICALL(final Context context, String address, final double LATITUDE, double LONGITUDE) {
+        Constant.setSession(context);
+        Date todayDate;
+        String mCurrentDate;
+        todayDate = Calendar.getInstance().getTime();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        mCurrentDate = df.format(todayDate);
+        Call<LocationChgangeModel> modelCall = Constant.apiService.locationChange(Constant.mUserId, mCurrentDate,
+                address, String.valueOf(LATITUDE), String.valueOf(LONGITUDE));
+        modelCall.enqueue(new Callback<LocationChgangeModel>() {
+            @Override
+            public void onResponse(Call<LocationChgangeModel> call, Response<LocationChgangeModel> response) {
+                Log.e(TAG, "onResponse: " );
+                Toast.makeText(context, String.valueOf(LATITUDE), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Call<LocationChgangeModel> call, Throwable t) {
+                Log.e(TAG, "onFailure: " );
             }
         });
     }

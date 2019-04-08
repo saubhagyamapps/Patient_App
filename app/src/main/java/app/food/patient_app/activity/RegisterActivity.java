@@ -33,7 +33,7 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-
+        overridePendingTransition(R.anim.slide_left_enter, R.anim.slide_left_exit);
         initialize();
         getClick();
     }
@@ -116,5 +116,18 @@ public class RegisterActivity extends AppCompatActivity {
                 Log.e(TAG, "onFailure: " + "Failed");
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        openMainScreen();
+        super.onBackPressed();
+    }
+
+    private void openMainScreen() {
+        Intent intent=new Intent(RegisterActivity.this,Login_Regi_Activity.class);
+        startActivity(intent);
+        finish();
+        overridePendingTransition(R.anim.slide_left_exit, R.anim.slide_left_enter);
     }
 }

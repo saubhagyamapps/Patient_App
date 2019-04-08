@@ -159,7 +159,7 @@ public class MainActivity extends Fragment {
         mList = mView.findViewById(R.id.list);
         mList.setLayoutManager(new LinearLayoutManager(getActivity()));
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mList.getContext(), DividerItemDecoration.VERTICAL);
-        dividerItemDecoration.setDrawable(getResources().getDrawable(R.drawable.divider, getActivity().getTheme()));
+     //   dividerItemDecoration.setDrawable(getResources().getDrawable(R.drawable.divider, getActivity().getTheme()));
         mList.addItemDecoration(dividerItemDecoration);
         mList.setAdapter(mAdapter);
 

@@ -3,6 +3,9 @@ package app.food.patient_app.util;
 import android.app.ProgressDialog;
 import android.content.Context;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 
 import app.food.patient_app.R;
@@ -13,7 +16,9 @@ import app.food.patient_app.sessionmanager.SessionManager;
 public class Constant {
 
 
-    public static final String BASE_URL = "http://192.168.1.200/patient_app/";
+  //  public static final String BASE_URL = "http://192.168.1.200/patient_app/";
+     public static final String BASE_URL = "http://frozenkitchen.in/patient_app/";
+
 
     public static ApiInterface apiService =
             ApiClient.getClient().create(ApiInterface.class);
@@ -30,6 +35,8 @@ public class Constant {
     public static String mGender;
     public static String mPassword;
     public static String mDeviceId;
+    public static String mHomeLat;
+    public static String mHomeLong;
 
     public static void progressDialog(Context applicationContext) {
         progressBar = new ProgressDialog(applicationContext);
@@ -39,6 +46,16 @@ public class Constant {
         progressBar.show();
 
     }
+
+    public static String currentDate() {
+        Date todayDate;
+        String mCurrentDate;
+        todayDate = Calendar.getInstance().getTime();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        mCurrentDate = df.format(todayDate);
+        return mCurrentDate;
+    }
+
     public static void setSession(Context applicationContext) {
         session = new SessionManager(applicationContext);
         HashMap<String, String> user = session.getUserDetails();

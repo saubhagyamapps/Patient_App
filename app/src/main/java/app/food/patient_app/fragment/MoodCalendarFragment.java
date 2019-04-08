@@ -2,27 +2,18 @@ package app.food.patient_app.fragment;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.app.TimePickerDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.luseen.spacenavigation.SpaceItem;
@@ -31,12 +22,10 @@ import com.luseen.spacenavigation.SpaceOnClickListener;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.SimpleTimeZone;
 import java.util.TimeZone;
 
 import app.food.patient_app.R;
@@ -63,7 +52,7 @@ public class MoodCalendarFragment extends Fragment {
     Date currentTime;
     DateFormat dateFormat;
     Dialog moodDialog, entriesDilog;
-    String mDate, mTime,mMood, mActivity, mNotes;
+    String mDate, mTime, mMood, mActivity, mNotes;
     RecyclerView recyclerView_mood;
     int[] num = new int[1];
     private List<GetMoodNotesModel.ResultBean> resultBeanList;
@@ -92,8 +81,8 @@ public class MoodCalendarFragment extends Fragment {
 
     private void initialization() {
         recyclerView_mood = mView.findViewById(R.id.mood_recycle);
-        moodCalendarAdapter = new MoodCalendarAdapter(getActivity(),resultBeanList);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,false);
+        moodCalendarAdapter = new MoodCalendarAdapter(getActivity(), resultBeanList);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView_mood.setLayoutManager(layoutManager);
         spaceNavigationView = (SpaceNavigationView) mView.findViewById(R.id.space);
         //spaceNavigationView.initWithSaveInstanceState();
@@ -111,7 +100,8 @@ public class MoodCalendarFragment extends Fragment {
             public void onCentreButtonClick() {
                 moodDialog = new Dialog(getActivity(), R.style.EntridialogTheme);
                 moodDialog.setContentView(R.layout.add_mood_layout);
-               startActivity(new Intent(getActivity(), MoodActivity.class));
+                startActivity(new Intent(getActivity(), MoodActivity.class));
+                getActivity().overridePendingTransition(R.anim.slide_left_exit, R.anim.slide_left_enter);
             }
 
             @Override
@@ -140,8 +130,7 @@ public class MoodCalendarFragment extends Fragment {
         });
     }
 
-    private void getMoodData()
-    {
+    private void getMoodData() {
         Constant.progressDialog(getActivity());
         final Call<GetMoodNotesModel> moodNotesModelCall = Constant.apiService.getMoodDetails(user.get(sessionManager.KEY_ID));
         moodNotesModelCall.enqueue(new Callback<GetMoodNotesModel>() {
@@ -149,13 +138,12 @@ public class MoodCalendarFragment extends Fragment {
             public void onResponse(Call<GetMoodNotesModel> call, Response<GetMoodNotesModel> response) {
                 List<GetMoodNotesModel.ResultBean> resultBean = response.body().getResult();
                 Constant.progressBar.dismiss();
-                if (response.body().getStatus().equals("0")){
-                    moodCalendarAdapter = new MoodCalendarAdapter(getActivity(),resultBean);
+                if (response.body().getStatus().equals("0")) {
+                    moodCalendarAdapter = new MoodCalendarAdapter(getActivity(), resultBean);
                     recyclerView_mood.setHasFixedSize(true);
                     moodCalendarAdapter.notifyDataSetChanged();
                     recyclerView_mood.setAdapter(moodCalendarAdapter);
-                }
-                else {
+                } else {
                     Toast.makeText(getActivity(), "Error...", Toast.LENGTH_SHORT).show();
                 }
 
