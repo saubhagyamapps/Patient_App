@@ -23,7 +23,7 @@ import app.food.patient_app.sessionmanager.SessionManager;
 public class SplashActivity extends AppCompatActivity {
 
     Handler handler;
-    private final int SPLASH_TIME = 100;
+    private final int SPLASH_TIME = 500;
     SessionManager sessionManager;
     Intent intent;
     int Flag;
@@ -35,20 +35,12 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         sessionManager = new SessionManager(SplashActivity.this);
+        overridePendingTransition(R.anim.slide_left_enter, R.anim.slide_left_exit);
 
         checkLoginSession();
         initEvents();
 
         setContentView(R.layout.activity_splash);
-        new Handler().postDelayed(
-                new Runnable() {
-                    @Override
-                    public void run() {
-
-                    }
-                }, SPLASH_TIME);
-
-        //checkAndroidVersion();
     }
 
     private void checkLoginSession() {
@@ -68,21 +60,30 @@ public class SplashActivity extends AppCompatActivity {
             checkPermission();
 
         } else {
-            openNewScreen();
 
+            new Handler().postDelayed(
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            openNewScreen();
+                        }
+                    }, SPLASH_TIME);
         }
 
     }
 
     private void openNewScreen() {
         if (Flag == 1) {
-            intent = new Intent(SplashActivity.this, LoginActivity.class);
+
+            intent = new Intent(SplashActivity.this, Login_Regi_Activity.class);
             startActivity(intent);
             finish();
+            overridePendingTransition(R.anim.slide_left_exit, R.anim.slide_left_enter);
         } else {
             intent = new Intent(SplashActivity.this, NavigationActivity.class);
             startActivity(intent);
             finish();
+            overridePendingTransition(R.anim.slide_left_exit, R.anim.slide_left_enter);
         }
     }
 
@@ -98,7 +99,8 @@ public class SplashActivity extends AppCompatActivity {
                 ContextCompat.checkSelfPermission(SplashActivity.this, Manifest.permission.READ_PHONE_STATE)+
                 ContextCompat.checkSelfPermission(SplashActivity.this, Manifest.permission.WRITE_SECURE_SETTINGS)+
                 ContextCompat.checkSelfPermission(SplashActivity.this, Manifest.permission.RECEIVE_SMS)+
-                ContextCompat.checkSelfPermission(SplashActivity.this, Manifest.permission.READ_SMS)
+                ContextCompat.checkSelfPermission(SplashActivity.this, Manifest.permission.READ_SMS)+
+                ContextCompat.checkSelfPermission(SplashActivity.this, Manifest.permission.BODY_SENSORS)
                 != PackageManager.PERMISSION_GRANTED) {
 
             if (ActivityCompat.shouldShowRequestPermissionRationale(SplashActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) ||
@@ -111,7 +113,8 @@ public class SplashActivity extends AppCompatActivity {
                     ActivityCompat.shouldShowRequestPermissionRationale(SplashActivity.this, Manifest.permission.READ_PHONE_STATE)||
                     ActivityCompat.shouldShowRequestPermissionRationale(SplashActivity.this, Manifest.permission.WRITE_SECURE_SETTINGS)||
                     ActivityCompat.shouldShowRequestPermissionRationale(SplashActivity.this, Manifest.permission.RECEIVE_SMS)||
-                    ActivityCompat.shouldShowRequestPermissionRationale(SplashActivity.this, Manifest.permission.READ_SMS)) {
+                    ActivityCompat.shouldShowRequestPermissionRationale(SplashActivity.this, Manifest.permission.READ_SMS)||
+                    ActivityCompat.shouldShowRequestPermissionRationale(SplashActivity.this, Manifest.permission.BODY_SENSORS)){
 
                 Snackbar.make(SplashActivity.this.findViewById(android.R.id.content),
                         "Please Grant Permissions to upload profile photo",
@@ -130,7 +133,8 @@ public class SplashActivity extends AppCompatActivity {
                                                 Manifest.permission.READ_PHONE_STATE,
                                                 Manifest.permission.WRITE_SECURE_SETTINGS,
                                                 Manifest.permission.RECEIVE_SMS,
-                                                Manifest.permission.READ_SMS},
+                                                Manifest.permission.READ_SMS,
+                                                Manifest.permission.BODY_SENSORS},
 
                                         PERMISSIONS_MULTIPLE_REQUEST);
                             }
@@ -147,11 +151,18 @@ public class SplashActivity extends AppCompatActivity {
                                 Manifest.permission.READ_PHONE_STATE,
                                 Manifest.permission.WRITE_SECURE_SETTINGS,
                                 Manifest.permission.RECEIVE_SMS,
-                                Manifest.permission.READ_SMS},
+                                Manifest.permission.READ_SMS,
+                                Manifest.permission.BODY_SENSORS},
                         PERMISSIONS_MULTIPLE_REQUEST);
             }
         } else {
-            openNewScreen();
+            new Handler().postDelayed(
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            openNewScreen();
+                        }
+                    }, SPLASH_TIME);
         }
     }
 
@@ -167,7 +178,13 @@ public class SplashActivity extends AppCompatActivity {
                     boolean location = grantResults[2] == PackageManager.PERMISSION_GRANTED;
 
                     if (cameraPermission && readExternalFile && location) {
-                        openNewScreen();
+                        new Handler().postDelayed(
+                                new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        openNewScreen();
+                                    }
+                                }, SPLASH_TIME);
                     } else {
                         Snackbar.make(findViewById(android.R.id.content),
                                 "Please Grant Permissions to upload profile photo",
@@ -187,7 +204,8 @@ public class SplashActivity extends AppCompatActivity {
                                                         Manifest.permission.READ_PHONE_STATE,
                                                         Manifest.permission.WRITE_SECURE_SETTINGS,
                                                         Manifest.permission.RECEIVE_SMS,
-                                                        Manifest.permission.READ_SMS},
+                                                        Manifest.permission.READ_SMS,
+                                                        Manifest.permission.BODY_SENSORS},
                                                 PERMISSIONS_MULTIPLE_REQUEST);
                                     }
                                 }).show();

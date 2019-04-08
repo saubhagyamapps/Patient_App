@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#2762DA</color>
-    <color name="colorPrimaryDark">#4781F8</color>
-    <color name="colorAccent">#000</color>
+    <color name="colorPrimary">#6cd286</color>
+    <color name="colorPrimaryDark">#b895cd</color>
+    <color name="colorAccent">#f4ca54</color>
     <color name="white">#FFFFFF</color>
     <color name="black">#000</color>
 
     <color name="black_overlay">#66000000</color>
+    <color name="cardHeader">#f4ca54</color>
+    <color name="tinColorIcon_us">#f4ca54</color>
+    <color name="tinColorIcon_s">#b895cd</color>
 </resources>

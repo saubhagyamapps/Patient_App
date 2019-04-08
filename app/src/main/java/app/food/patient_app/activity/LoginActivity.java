@@ -7,6 +7,7 @@ import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -14,6 +15,18 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.HttpMethod;
+import com.facebook.Profile;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -25,8 +38,15 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Arrays;
+import java.util.List;
+
 import app.food.patient_app.R;
 import app.food.patient_app.model.LoginModel;
+import app.food.patient_app.model.LoginWithFbModel;
 import app.food.patient_app.model.LoginWithGmailModel;
 import app.food.patient_app.sessionmanager.SessionManager;
 import app.food.patient_app.util.Constant;
@@ -47,16 +67,38 @@ public class LoginActivity extends AppCompatActivity {
     private GoogleApiClient mGoogleApiClient;
     private static final int RC_SIGN_IN = 007;
     String personName, email;
-
+    private LoginButton loginButton;
+    private static final String EMAIL = "email";
+    CallbackManager callbackManager;
+    String fbName, fbEmail, fbId, fbBirthday, fbLoaction, fbImageurl;
+    AccessToken accessToken;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+     //   FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_login);
+        overridePendingTransition(R.anim.slide_left_enter, R.anim.slide_left_exit);
         initialize();
         getClick();
     }
 
+    @Override
+    public void onBackPressed() {
+        openMainScreen();
+        super.onBackPressed();
+    }
+
+    private void openMainScreen() {
+        Intent intent = new Intent(LoginActivity.this, Login_Regi_Activity.class);
+        startActivity(intent);
+        finish();
+        overridePendingTransition(R.anim.slide_left_exit, R.anim.slide_left_enter);
+    }
+
     private void initialize() {
+        callbackManager = CallbackManager.Factory.create();
+        accessToken = AccessToken.getCurrentAccessToken();
+        LoginManager.getInstance().logOut();
         getFilePaths();
         sessionManager = new SessionManager(LoginActivity.this);
         edt_LoginEmail = findViewById(R.id.edt_login_email);
@@ -67,6 +109,7 @@ public class LoginActivity extends AppCompatActivity {
         mFirebaseId = FirebaseInstanceId.getInstance().getToken();
         txt_Forgot = findViewById(R.id.txt_forgot);
         txt_SignUp = findViewById(R.id.txt_SignUp);
+        loginButton = findViewById(R.id.login_fb);
 
         SignIn_Google = findViewById(R.id.signup_google);
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -82,7 +125,113 @@ public class LoginActivity extends AppCompatActivity {
                 })
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LoginManager.getInstance().logOut();
+                LoginManager.getInstance().logInWithReadPermissions(LoginActivity.this, Arrays.asList("public_profile,email", "user_gender"));
+                loginwithFb();
+            }
+        });
     }
+
+    private void loginwithFb() {
+        Constant.progressDialog(LoginActivity.this);
+        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+
+                final GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(),
+                        new GraphRequest.GraphJSONObjectCallback() {
+                            @Override
+                            public void onCompleted(JSONObject object, GraphResponse response) {
+                                {
+                                    try {
+
+                                        Log.e("object", object.toString());
+                                        fbName = object.getString("name");
+                                        fbEmail = object.getString("email");
+                                        fbId = object.getString("id");
+
+                                        if (object.has("birthday")) {
+                                            String birthday = object.getString("birthday");
+                                        }
+                                        if (object.has("gender")) {
+                                            String gender = object.getString("gender");
+                                        }
+
+                                        fbImageurl = "https://graph.facebook.com/" + fbId + "/picture?type=large";
+                                        Log.e("Picture", fbImageurl);
+                                        Log.e(TAG, "Name: " + fbName + ", email: " + fbEmail
+                                                + ", DOB ");
+                                        
+                                        LOGINWITHFBAPICALL();
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        });
+                Bundle parameters = new Bundle();
+                parameters.putString("fields", "id, name, email,gender,birthday,link");
+                request.setParameters(parameters);
+                request.executeAsync();
+
+            }
+
+            @Override
+            public void onCancel() {
+
+                Log.d(TAG, "Login attempt cancelled.");
+                if (AccessToken.getCurrentAccessToken() == null) {
+                    return; // already logged out
+                }
+                new GraphRequest(AccessToken.getCurrentAccessToken(), "/me/permissions/", null, HttpMethod.DELETE, new GraphRequest
+                        .Callback() {
+                    @Override
+                    public void onCompleted(GraphResponse graphResponse) {
+                        LoginManager.getInstance().logOut();
+                        accessToken.setCurrentAccessToken(null);
+                        LoginManager.getInstance().logInWithReadPermissions(LoginActivity.this, Arrays.asList("public_profile,email"));
+
+                        loginwithFb();
+                    }
+                }); //.executeAsync();
+            }
+
+            @Override
+            public void onError(FacebookException e) {
+                Log.e("ON ERROR", "Login attempt failed.");
+
+                AccessToken.setCurrentAccessToken(null);
+                LoginManager.getInstance().logInWithReadPermissions(LoginActivity.this, Arrays.asList("public_profile,email,user_birthday"));
+            }
+        });
+    }
+
+    public void LOGINWITHFBAPICALL(){
+        Call<LoginWithFbModel> login=Constant.apiService.getLoginWithFb(fbId,fbName,fbEmail,fbImageurl,mDeviceId,mFirebaseId);
+        login.enqueue(new Callback<LoginWithFbModel>() {
+            @Override
+            public void onResponse(Call<LoginWithFbModel> call, Response<LoginWithFbModel> response) {
+                Log.e(TAG, "onResponse: "+response.body().getResult() );
+
+                List<LoginWithFbModel.ResultBean> resultBean = response.body().getResult();
+                sessionManager.CreateLoginSession(resultBean.get(0).getId(), fbName, fbEmail, "", "", mFirebaseId, mFirebaseId);
+                startActivity(new Intent(LoginActivity.this,NavigationActivity.class));
+                finish();
+                overridePendingTransition(R.anim.slide_left_exit, R.anim.slide_left_enter);
+                Constant.progressBar.dismiss();
+
+            }
+
+            @Override
+            public void onFailure(Call<LoginWithFbModel> call, Throwable t) {
+                Constant.progressBar.dismiss();
+            }
+        });
+    }
+
 
     private void getClick() {
         btn_Login.setOnClickListener(new View.OnClickListener() {
@@ -101,6 +250,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(LoginActivity.this, ForgotPasswordActivity.class));
+                overridePendingTransition(R.anim.slide_left_exit, R.anim.slide_left_enter);
             }
         });
         SignIn_Google.setOnClickListener(new View.OnClickListener() {
@@ -149,6 +299,8 @@ public class LoginActivity extends AppCompatActivity {
                     sessionManager.CreateLoginSession(resultBean.getId(), resultBean.getUsername(), mLoginEmail, resultBean.getMobile(), mLoginPwd, resultBean.getFirebase_id(), resultBean.getDevice_id());
                     Toast.makeText(LoginActivity.this, response.body().getMessgae(), Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(LoginActivity.this, NavigationActivity.class));
+                    finish();
+                    overridePendingTransition(R.anim.slide_left_exit, R.anim.slide_left_enter);
                 } else {
                     Toast.makeText(LoginActivity.this, response.body().getMessgae(), Toast.LENGTH_SHORT).show();
                 }
@@ -206,16 +358,17 @@ public class LoginActivity extends AppCompatActivity {
     private void LoginWithGmailAPICALL(final String personName, final String email) {
         Constant.setSession(LoginActivity.this);
         Constant.progressDialog(LoginActivity.this);
-        Call<LoginWithGmailModel> login = Constant.apiService.loginWithGmail(email, personName,mFirebaseId,mFirebaseId);
+        Call<LoginWithGmailModel> login = Constant.apiService.loginWithGmail(email, personName, mFirebaseId, mFirebaseId);
         login.enqueue(new Callback<LoginWithGmailModel>() {
             @Override
             public void onResponse(Call<LoginWithGmailModel> call, Response<LoginWithGmailModel> response) {
                 LoginWithGmailModel.ResultBean resultBean = response.body().getResult().get(0);
                 Constant.progressBar.dismiss();
-                sessionManager.CreateLoginSession(resultBean.getId(),personName, email, "", "",mFirebaseId, mFirebaseId);
+                sessionManager.CreateLoginSession(resultBean.getId(), personName, email, "", "", mFirebaseId, mFirebaseId);
                 Intent intent = new Intent(LoginActivity.this, NavigationActivity.class);
                 startActivity(intent);
                 finish();
+                overridePendingTransition(R.anim.slide_left_exit, R.anim.slide_left_enter);
             }
 
             @Override
@@ -234,7 +387,10 @@ public class LoginActivity extends AppCompatActivity {
         if (requestCode == RC_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             handleSignInResult(result);
+        } else {
+            callbackManager.onActivityResult(requestCode, resultCode, data);
         }
+
 
     }
 
@@ -250,7 +406,7 @@ public class LoginActivity extends AppCompatActivity {
 
         //Create an array to store path to all the images
         String[] arrPath = new String[count];
-        Log.e(TAG, "getFilePaths:-----> "+count );
+        Log.e(TAG, "getFilePaths:-----> " + count);
         for (int i = 0; i < count; i++) {
             cursor.moveToPosition(i);
             int dataColumnIndex = cursor.getColumnIndex(MediaStore.Images.Media.DATA);

@@ -156,9 +156,14 @@ public class CallLogsFragment extends Fragment implements MessageListener {
         countModelCall.enqueue(new Callback<ImageCountModel>() {
             @Override
             public void onResponse(Call<ImageCountModel> call, Response<ImageCountModel> response) {
-                if (response.body().getStatus().equals("0")) {
-                    txtToday_Add_images.setText("Today " + response.body().getResult().get(0).getCount() + " new images add");
+                try {
+                    if (response.body().getStatus().equals("0")) {
+                        txtToday_Add_images.setText("Today " + response.body().getResult().get(0).getCount() + " new images add");
+                    }
+                }catch (Exception e){
+
                 }
+
             }
 
             @Override

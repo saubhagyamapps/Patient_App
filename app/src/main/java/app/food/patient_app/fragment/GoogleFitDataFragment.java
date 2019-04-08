@@ -38,6 +38,7 @@ import com.google.android.gms.fitness.request.OnDataPointListener;
 import com.google.android.gms.fitness.request.SensorRequest;
 import com.google.android.gms.fitness.request.SessionInsertRequest;
 import com.google.android.gms.fitness.request.SessionReadRequest;
+import com.google.android.gms.fitness.result.DailyTotalResult;
 import com.google.android.gms.fitness.result.DataReadResult;
 import com.google.android.gms.fitness.result.DataSourcesResult;
 import com.google.android.gms.fitness.result.SessionReadResult;
@@ -62,6 +63,7 @@ import app.food.patient_app.model.ArrayListGoogleFitModel;
 import app.food.patient_app.model.CaloriesDataModel;
 import app.food.patient_app.model.GetCaloriesModel;
 import app.food.patient_app.model.GetGooGleFitActivityModel;
+import app.food.patient_app.model.InsetCaloriesDataModel;
 import app.food.patient_app.util.AppUtil;
 import app.food.patient_app.util.Constant;
 import retrofit2.Call;
@@ -78,6 +80,7 @@ public class GoogleFitDataFragment extends Fragment implements OnDataPointListen
     private static final String AUTH_PENDING = "auth_state_pending";
     private boolean authInProgress = false;
     private GoogleApiClient mApiClient;
+    private GoogleApiClient mGoogleApiClient;
     Date todayDate;
     String mCurrentDate;
     ArrayListGoogleFitModel googleFitJsonModel;
@@ -102,6 +105,18 @@ public class GoogleFitDataFragment extends Fragment implements OnDataPointListen
 
         }
         return mView;
+    }
+
+    private void displayStepDataForToday() {
+
+
+
+        DailyTotalResult result = Fitness.HistoryApi.readDailyTotal( mApiClient, DataType.TYPE_STEP_COUNT_DELTA ).await(1, TimeUnit.MINUTES);
+        showDataSet(result.getTotal());
+    }
+
+    private void showDataSet(DataSet total) {
+        Log.e(TAG, "showDataSet: "+total );
     }
 
     private void initialize() {
@@ -130,8 +145,6 @@ public class GoogleFitDataFragment extends Fragment implements OnDataPointListen
                 .addOnConnectionFailedListener(this)
                 .build();
 
-
-        // getCaloriestData();
     }
 
     @Override
@@ -198,8 +211,9 @@ public class GoogleFitDataFragment extends Fragment implements OnDataPointListen
 
         DataReadRequest readRequest = new DataReadRequest.Builder()
                 .aggregate(DataType.TYPE_ACTIVITY_SEGMENT, DataType.AGGREGATE_ACTIVITY_SUMMARY)
-                //.aggregate(DataType.TYPE_CALORIES_EXPENDED,DataType.AGGREGATE_CALORIES_EXPENDED)
+              //  .aggregate(DataType.TYPE_CALORIES_EXPENDED,DataType.AGGREGATE_CALORIES_EXPENDED)
                 .bucketByTime(1, TimeUnit.DAYS)
+               // .bucketByTime(1, TimeUnit.MINUTES)
                 .setTimeRange(startTime, endTime, TimeUnit.MILLISECONDS)
                 .build();
 
@@ -400,10 +414,10 @@ public class GoogleFitDataFragment extends Fragment implements OnDataPointListen
     private void insertFitData(JsonArray s) {
         Constant.progressDialog(getActivity());
         Constant.setSession(getActivity());
-        Call<String> stringCall = Constant.apiService.InsertGoogleFitActivity(Constant.mUserId, mCurrentDate, s.toString());
-        stringCall.enqueue(new Callback<String>() {
+        Call<InsetCaloriesDataModel> stringCall = Constant.apiService.InsertGoogleFitActivity(Constant.mUserId, mCurrentDate, s.toString());
+        stringCall.enqueue(new Callback<InsetCaloriesDataModel>() {
             @Override
-            public void onResponse(Call<String> call, Response<String> response) {
+            public void onResponse(Call<InsetCaloriesDataModel> call, Response<InsetCaloriesDataModel> response) {
                 Constant.progressBar.dismiss();
                 Log.e("response", "Getting response from server : " + "Activity Data Inserted Successfully");
                 Log.e(TAG, "onResponse: " + response.message());
@@ -411,7 +425,7 @@ public class GoogleFitDataFragment extends Fragment implements OnDataPointListen
             }
 
             @Override
-            public void onFailure(Call<String> call, Throwable t) {
+            public void onFailure(Call<InsetCaloriesDataModel> call, Throwable t) {
                 Constant.progressBar.dismiss();
                 Log.d(TAG, "Getting response from server -->>>: " + "Activity Data insert failed");
                 Log.d(TAG, "Getting response from server -->>>: " + t.getMessage());
@@ -460,6 +474,7 @@ public class GoogleFitDataFragment extends Fragment implements OnDataPointListen
                     recyclerView_google_fit.setHasFixedSize(true);
                     googleFitAdapter.notifyDataSetChanged();
                     recyclerView_google_fit.setAdapter(googleFitAdapter);
+
 
                 } else {
                     Toast.makeText(getActivity(), "Activity Data Fetch Failed", Toast.LENGTH_SHORT).show();

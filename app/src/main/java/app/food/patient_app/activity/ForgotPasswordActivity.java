@@ -1,5 +1,6 @@
 package app.food.patient_app.activity;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -96,5 +97,17 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                 Log.e(TAG, "onFailure: " + "API Call Failed" );
             }
         });
+    }
+    @Override
+    public void onBackPressed() {
+        openMainScreen();
+        super.onBackPressed();
+    }
+
+    private void openMainScreen() {
+        Intent intent=new Intent(ForgotPasswordActivity.this,LoginActivity.class);
+        startActivity(intent);
+        finish();
+        overridePendingTransition(R.anim.slide_left_exit, R.anim.slide_left_enter);
     }
 }

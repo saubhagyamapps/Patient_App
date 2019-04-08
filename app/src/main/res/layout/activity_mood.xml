@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -37,236 +36,243 @@
             android:id="@+id/text_howru"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:text="How are you Today ?"
-            android:textSize="25sp"
+            android:layout_below="@id/back_next_sign"
             android:gravity="center"
+            android:text="How are you Today ?"
             android:textColor="@color/black"
-            android:layout_below="@id/back_next_sign"/>
+            android:textSize="25sp" />
+
         <View
-            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/gray_light"
             android:layout_below="@id/text_howru"
-            android:layout_marginTop="5dp"/>
+            android:layout_marginTop="5dp"
+            android:background="@color/gray_light"
+            android:visibility="gone" />
+
         <RelativeLayout
-            android:visibility="gone"
             android:id="@+id/date_time_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/text_howru"
             android:layout_marginLeft="10dp"
-            android:layout_marginTop="20dp">
+            android:layout_marginTop="20dp"
+            android:visibility="gone">
+
             <TextView
                 android:id="@+id/txt_today_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Today,Date"
-                android:textSize="18sp"
-                android:textColor="@color/colorPrimaryDark"
                 android:drawableLeft="@drawable/calendar_txt"
                 android:drawableRight="@drawable/drop_down_arrow"
                 android:drawablePadding="10dp"
-                />
+                android:text="Today,Date"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="18sp" />
+
             <TextView
                 android:id="@+id/txt_today_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:text="Today,Time"
-                android:textSize="18sp"
-                android:textColor="@color/colorPrimaryDark"
                 android:drawableLeft="@drawable/clock"
                 android:drawableRight="@drawable/drop_down_arrow"
                 android:drawablePadding="10dp"
-                />
+                android:text="Today,Time"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="18sp" />
         </RelativeLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/gray_light"
             android:layout_below="@id/date_time_layout"
-            android:layout_marginTop="10dp"/>
+            android:layout_marginTop="10dp"
+            android:background="@color/gray_light" />
 
         <LinearLayout
             android:id="@+id/face_layout_line1"
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:layout_below="@id/date_time_layout"
-            android:weightSum="5"
+            android:layout_marginTop="30dp"
             android:orientation="horizontal"
-            android:layout_marginTop="30dp">
+            android:weightSum="5">
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1">
+
                 <ImageView
                     android:id="@+id/happy"
                     android:layout_width="50dp"
                     android:layout_height="80dp"
-                    android:layout_margin="5dp"
                     android:layout_centerHorizontal="true"
-                    android:src="@drawable/happy"/>
+                    android:layout_margin="5dp"
+                    android:src="@drawable/happy"
+                    android:tint="@color/tinColorIcon_us" />
             </RelativeLayout>
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1">
+
                 <ImageView
                     android:id="@+id/veryhappy"
+
                     android:layout_width="50dp"
                     android:layout_height="80dp"
-                    android:layout_margin="5dp"
                     android:layout_centerHorizontal="true"
-                    android:src="@drawable/veryhappy"/>
+                    android:layout_margin="5dp"
+                    android:src="@drawable/veryhappy"
+                    android:tint="@color/tinColorIcon_us" />
             </RelativeLayout>
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1">
+
                 <ImageView
                     android:id="@+id/inlove"
+
                     android:layout_width="50dp"
                     android:layout_height="80dp"
-                    android:layout_margin="5dp"
                     android:layout_centerHorizontal="true"
-                    android:src="@drawable/in_love"/>
+                    android:layout_margin="5dp"
+                    android:src="@drawable/in_love"
+                    android:tint="@color/tinColorIcon_us" />
             </RelativeLayout>
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1">
+
                 <ImageView
                     android:id="@+id/smiling"
+
                     android:layout_width="50dp"
                     android:layout_height="80dp"
-                    android:layout_margin="5dp"
                     android:layout_centerHorizontal="true"
-                    android:src="@drawable/smiling"/>
+                    android:layout_margin="5dp"
+                    android:src="@drawable/smiling"
+                    android:tint="@color/tinColorIcon_us" />
             </RelativeLayout>
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1">
+
                 <ImageView
                     android:id="@+id/smilinghappy"
+
                     android:layout_width="50dp"
                     android:layout_height="80dp"
-                    android:layout_margin="5dp"
                     android:layout_centerHorizontal="true"
-                    android:src="@drawable/smilinghappy"/>
+                    android:layout_margin="5dp"
+                    android:src="@drawable/smilinghappy"
+                    android:tint="@color/tinColorIcon_us" />
 
             </RelativeLayout>
 
-           <!-- <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="5dp"
-                android:layout_weight="1"
-                android:src="@drawable/happiness_face"/>
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="5dp"
-                android:layout_weight="1"
-                android:src="@drawable/very_happiness"/>
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="5dp"
-                android:layout_weight="1"
-                android:src="@drawable/happiness_face"
-                />
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="5dp"
-                android:layout_weight="1"
-                android:src="@drawable/very_happiness"/>
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="5dp"
-                android:layout_weight="1"
-                android:src="@drawable/happiness_face"
-
-                />-->
         </LinearLayout>
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/gray_light"
+            android:layout_below="@id/face_layout_line1"
             android:layout_marginTop="10dp"
-            android:layout_below="@id/face_layout_line1"/>
+            android:background="@color/gray_light" />
 
         <LinearLayout
             android:id="@+id/face_layout_line2"
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:layout_below="@id/face_layout_line1"
-            android:weightSum="5"
+            android:layout_marginTop="30dp"
             android:orientation="horizontal"
-            android:layout_marginTop="30dp">
+            android:weightSum="5">
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1">
+
                 <ImageView
                     android:id="@+id/confused"
                     android:layout_width="50dp"
                     android:layout_height="80dp"
-                    android:layout_margin="5dp"
                     android:layout_centerHorizontal="true"
-                    android:src="@drawable/confused"/>
+                    android:layout_margin="5dp"
+                    android:src="@drawable/confused"
+                    android:tint="@color/tinColorIcon_us" />
             </RelativeLayout>
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1">
+
                 <ImageView
                     android:id="@+id/unhappy"
                     android:layout_width="50dp"
                     android:layout_height="80dp"
-                    android:layout_margin="5dp"
                     android:layout_centerHorizontal="true"
-                    android:src="@drawable/unhappy"/>
+                    android:layout_margin="5dp"
+                    android:src="@drawable/unhappy"
+                    android:tint="@color/tinColorIcon_us" />
             </RelativeLayout>
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1">
+
                 <ImageView
                     android:id="@+id/sad"
+
                     android:layout_width="50dp"
                     android:layout_height="80dp"
-                    android:layout_margin="5dp"
                     android:layout_centerHorizontal="true"
-                    android:src="@drawable/sad"/>
+                    android:layout_margin="5dp"
+                    android:src="@drawable/sad"
+                    android:tint="@color/tinColorIcon_us" />
             </RelativeLayout>
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1">
+
                 <ImageView
                     android:id="@+id/mad"
+
                     android:layout_width="50dp"
                     android:layout_height="80dp"
-                    android:layout_margin="5dp"
                     android:layout_centerHorizontal="true"
-                    android:src="@drawable/mad"/>
+                    android:layout_margin="5dp"
+                    android:src="@drawable/mad"
+                    android:tint="@color/tinColorIcon_us" />
             </RelativeLayout>
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1">
+
                 <ImageView
                     android:id="@+id/angry"
+
                     android:layout_width="50dp"
                     android:layout_height="80dp"
-                    android:layout_margin="5dp"
                     android:layout_centerHorizontal="true"
-                    android:src="@drawable/angry"/>
+                    android:layout_margin="5dp"
+                    android:src="@drawable/angry"
+                    android:tint="@color/tinColorIcon_us" />
 
             </RelativeLayout>
 
@@ -304,22 +310,23 @@
 
                  />-->
         </LinearLayout>
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/gray_light"
+            android:layout_below="@id/face_layout_line2"
             android:layout_marginTop="10dp"
-            android:layout_below="@id/face_layout_line2"/>
+            android:background="@color/gray_light" />
 
         <LinearLayout
-            android:visibility="gone"
             android:id="@+id/activity_layout"
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:layout_below="@id/face_layout"
-            android:weightSum="5"
+            android:layout_marginTop="30dp"
             android:orientation="horizontal"
-            android:layout_marginTop="30dp">
+            android:visibility="gone"
+            android:weightSum="5">
             <!--<RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Patient_App</string>
+    <string name="app_name">IMOOD TRACKER</string>
 
     //button
     <string name="register">Register</string>
@@ -85,5 +85,12 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="security_exception_text">Permission Denial, you must grant RECORD_AUDIO permission or set handleAudioPermissions(true)</string>
+    <string name="set_permission_listener_exception_text">This operation is not supported. Set handleAudioPermissions(true) to allow</string>
+    <string name="permission_listener_null_exception_text">OnSpeechRecognitionPermissionListener has not been initialized</string>
+    <string name="speech_listener_null_exception_text">OnSpeechRecognitionListener has not been initialized</string>
+    <string name="speech_not_enabled_exception_text">Speech Recognition is not available on this device</string>
 
+    <string name="facebook_app_id">1249075145242978</string>
+    <string name="fb_login_protocol_scheme">1249075145242978</string>
 </resources>

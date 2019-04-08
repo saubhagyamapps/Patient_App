@@ -1,15 +1,21 @@
 package app.food.patient_app.retrofit;
 
+import app.food.patient_app.model.AddressTimeModel;
 import app.food.patient_app.model.AllCallsDataModel;
 import app.food.patient_app.model.CaloriesDataModel;
 import app.food.patient_app.model.ForgotPasswordModel;
 import app.food.patient_app.model.GetCaloriesModel;
 import app.food.patient_app.model.GetGooGleFitActivityModel;
+import app.food.patient_app.model.GetHomeLocationModel;
 import app.food.patient_app.model.GetMoodNotesModel;
 import app.food.patient_app.model.GetSMSCountModel;
 import app.food.patient_app.model.GetSocialUsageListModel;
+import app.food.patient_app.model.HomeLocationStoreModel;
 import app.food.patient_app.model.ImageCountModel;
+import app.food.patient_app.model.InsetCaloriesDataModel;
+import app.food.patient_app.model.LocationChgangeModel;
 import app.food.patient_app.model.LoginModel;
+import app.food.patient_app.model.LoginWithFbModel;
 import app.food.patient_app.model.LoginWithGmailModel;
 import app.food.patient_app.model.MoodInsertModel;
 import app.food.patient_app.model.NewAddedCountactCountModel;
@@ -17,8 +23,8 @@ import app.food.patient_app.model.NewContackGetModel;
 import app.food.patient_app.model.RegisterModel;
 import app.food.patient_app.model.RemainingCallModel;
 import app.food.patient_app.model.ResetPasswordModel;
-import app.food.patient_app.model.SendActivityModel;
 import app.food.patient_app.model.SendSMSCountModel;
+import app.food.patient_app.model.StoreCurrentHomeAddressModel;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -89,7 +95,7 @@ public interface ApiInterface {
                                            @Field("date") String date);
 
     @FormUrlEncoded
-    @POST("social_timespent")
+    @POST("social_timespent_test")
     Call<String> InsertSocialData(@Field("user_id") String user_id,
                                   @Field("date") String date,
                                   @Field("gsonObject") String gsonObject);
@@ -152,12 +158,13 @@ public interface ApiInterface {
                                            @Field("date") String date);
 
     @FormUrlEncoded
-    @POST("test1")
-    Call<String> InsertGoogleFitActivity(@Field("user_id") String user_id,
-                                         @Field("date") String date,
-                                         @Field("gsonObject") String gsonObject);
+    @POST("insert_activity")
+    Call<InsetCaloriesDataModel> InsertGoogleFitActivity(@Field("user_id") String user_id,
+                                                         @Field("date") String date,
+                                                         @Field("gsonObject") String gsonObject);
+
     @FormUrlEncoded
-    @POST("test2")
+    @POST("fetch_activity")
     Call<GetGooGleFitActivityModel> getActivityData(@Field("user_id") String user_id,
                                                     @Field("date") String date);
 
@@ -166,4 +173,44 @@ public interface ApiInterface {
     Call<CaloriesDataModel> InsertCalories(@Field("user_id") String user_id,
                                            @Field("date") String date,
                                            @Field("calories") String calories);
+
+    @FormUrlEncoded
+    @POST("fetch_location")
+    Call<GetHomeLocationModel> getHomeLocation(@Field("user_id") String user_id);
+
+    @FormUrlEncoded
+    @POST("store_location")
+    Call<StoreCurrentHomeAddressModel> storeLocation(@Field("user_id") String user_id,
+                                                     @Field("address") String address,
+                                                     @Field("latitude") String latitude,
+                                                     @Field("longitude") String longitude);
+    @FormUrlEncoded
+    @POST("home_location")
+    Call<HomeLocationStoreModel> storeHomeLocation(@Field("user_id") String user_id,
+                                                   @Field("date") String date,
+                                                   @Field("address") String address,
+                                                   @Field("latitude") String latitude,
+                                                   @Field("longitude") String longitude);
+
+    @FormUrlEncoded
+    @POST("time_diffrent")
+    Call<AddressTimeModel> getAddressTime(@Field("user_id") String user_id,
+                                          @Field("date") String date);
+
+    @FormUrlEncoded
+    @POST("change_location")
+    Call<LocationChgangeModel> locationChange(@Field("user_id") String user_id,
+                                              @Field("date") String date,
+                                              @Field("address") String address,
+                                              @Field("latitude") String latitude,
+                                              @Field("longitude") String longitude);
+
+    @FormUrlEncoded
+    @POST("fblogin")
+    Call<LoginWithFbModel> getLoginWithFb(@Field("fbid") String fbid,
+                                          @Field("username") String username,
+                                          @Field("email") String email,
+                                          @Field("image") String image,
+                                          @Field("device_id") String device_id,
+                                          @Field("firebase_id") String firebase_id);
 }

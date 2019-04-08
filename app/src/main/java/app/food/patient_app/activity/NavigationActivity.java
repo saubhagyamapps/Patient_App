@@ -2,8 +2,13 @@ package app.food.patient_app.activity;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.CallLog;
 import android.provider.MediaStore;
@@ -14,12 +19,17 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 
@@ -37,18 +47,24 @@ import java.util.StringTokenizer;
 
 import app.food.patient_app.R;
 import app.food.patient_app.fragment.CallLogsFragment;
+import app.food.patient_app.fragment.GetCurrentLocationFragment;
 import app.food.patient_app.fragment.GoogleFitDataFragment;
 import app.food.patient_app.fragment.MoodCalendarFragment;
 import app.food.patient_app.fragment.ResetPasswordFragment;
+import app.food.patient_app.lockscreen.LockScreenCountActivity;
 import app.food.patient_app.model.CalllogsListModel;
 import app.food.patient_app.model.RemainingCallModel;
 import app.food.patient_app.receiver.AlarmReceiver;
+import app.food.patient_app.service.ConnectionCheckService;
 import app.food.patient_app.sessionmanager.SessionManager;
 import app.food.patient_app.ui.MainActivity;
 import app.food.patient_app.util.Constant;
+import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static app.food.patient_app.util.Constant.session;
 
 public class NavigationActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -62,15 +78,24 @@ public class NavigationActivity extends AppCompatActivity
     private String url;
     ArrayList<HashMap<String, String>> contactList;
     String mMonthId;
-
+    NavigationView navigationView;
+    TextView txtName, txtEmail;
+    CircleImageView imgUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation);
+        overridePendingTransition(R.anim.slide_left_enter, R.anim.slide_left_exit);
+        Constant.setSession(NavigationActivity.this);
 
+
+        Intent intent = new Intent(NavigationActivity.this, ConnectionCheckService.class);
+        intent.setAction(ConnectionCheckService.ACTION_START_FOREGROUND_SERVICE);
+        startService(intent);
         contactList = new ArrayList<>();
         Constant.setSession(getApplicationContext());
         RemainningCallAPI();
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -87,9 +112,11 @@ public class NavigationActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        setnavigationHeader();
     }
+
 
     public void getFilePaths() {
         final String[] columns = {MediaStore.Images.Media.DATA, MediaStore.Images.Media._ID};
@@ -117,6 +144,21 @@ public class NavigationActivity extends AppCompatActivity
 
     }
 
+    private void setnavigationHeader() {
+        View header = navigationView.getHeaderView(0);
+        txtName = (TextView) header.findViewById(R.id.txtName);
+        txtEmail = (TextView) header.findViewById(R.id.txtEmail);
+    //    imgUser = header.findViewById(R.id.imageView);
+        txtName.setText(Constant.mUserName.toUpperCase());
+        txtEmail.setText(Constant.mUserEmail);
+      /*  Glide.with(getApplicationContext()).load(user.get(session.KEY_IMAGE))
+                .thumbnail(0.5f)
+                .crossFade()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(imgUser);*/
+    }
+
+
     private void setNotifacation() {
         Intent myIntent = new Intent(NavigationActivity.this, AlarmReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(NavigationActivity.this, 0, myIntent, 0);
@@ -124,7 +166,7 @@ public class NavigationActivity extends AppCompatActivity
 
         Calendar firingCal = Calendar.getInstance();
         Calendar currentCal = Calendar.getInstance();
-    //    int mMinute = new Time(System.currentTimeMillis()).getMinutes() ;
+        //    int mMinute = new Time(System.currentTimeMillis()).getMinutes() ;
         int mMinute = new Time(System.currentTimeMillis()).getMinutes() + 1;
         int mHour = new Time(System.currentTimeMillis()).getHours();
         int hour = Calendar.getInstance().get(Calendar.HOUR);
@@ -168,6 +210,7 @@ public class NavigationActivity extends AppCompatActivity
     }
 
 
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -186,7 +229,7 @@ public class NavigationActivity extends AppCompatActivity
         } else if (id == R.id.nav_googlefit) {
             fragment = new GoogleFitDataFragment();
 
-        }else if (id == R.id.nav_resetpassword) {
+        } else if (id == R.id.nav_resetpassword) {
 
             fragment = new ResetPasswordFragment();
 
@@ -197,6 +240,16 @@ public class NavigationActivity extends AppCompatActivity
         } else if (id == R.id.nav_logout) {
 
             sessionManager.logoutUser();
+            finish();
+        } else if (id == R.id.nav_getCurrentLocation) {
+
+            fragment = new GetCurrentLocationFragment();
+            //  startActivity(new Intent(getApplicationContext(), SearchLocationActivity.class));
+        } else if (id == R.id.nav_Voice) {
+
+            //fragment = new VoiceAnalizerFragment();
+            startActivity(new Intent(getApplicationContext(), LockScreenCountActivity.class));
+
         }
         if (fragment != null) {
             FragmentManager fragmentManager = getSupportFragmentManager();
@@ -222,10 +275,15 @@ public class NavigationActivity extends AppCompatActivity
         callModelCall.enqueue(new Callback<RemainingCallModel>() {
             @Override
             public void onResponse(Call<RemainingCallModel> call, Response<RemainingCallModel> response) {
-                for (int i = 0; i < response.body().getResult().size(); i++) {
-                    getCallDetails(response.body().getResult().get(i));
+                try {
+                    for (int i = 0; i < response.body().getResult().size(); i++) {
+                        getCallDetails(response.body().getResult().get(i));
+
+                    }
+                }catch (Exception e){
 
                 }
+
             }
 
             @Override

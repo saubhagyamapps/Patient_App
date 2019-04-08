@@ -1,71 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="120dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_margin="10dp"
     app:cardCornerRadius="5dp">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-    <TextView
-        android:id="@+id/txt_mood_date"
-        android:layout_width="match_parent"
-        android:layout_height="25dp"
-        android:textColor="@color/white"
-        android:text="March 12, 2019"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:background="#6E95DA"
-        android:gravity="center"/>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:weightSum="4">
+
+        <TextView
+            android:id="@+id/txt_mood_date"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:background="@color/cardHeader"
+            android:gravity="center"
+            android:text="March 12, 2019"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="3">
-        <ImageView
-            android:id="@+id/mood_image"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/happy"
-            android:layout_margin="10dp"
-            />
+            android:weightSum="4">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="3">
+
+                <ImageView
+                    android:tint="@color/tinColorIcon_us"
+                    android:id="@+id/mood_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="10dp"
+                    android:src="@drawable/happy" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/txt_activity"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:paddingLeft="10dp"
+                    android:text="Work"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/txt_notes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:paddingLeft="10dp"
+                    android:text="I am in meeting"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/txt_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:paddingLeft="10dp"
+                    android:text="6:45 PM"
+                    android:textSize="15sp" />
+            </LinearLayout>
         </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical">
-            <TextView
-                android:id="@+id/txt_activity"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:textSize="15sp"
-                android:text="Work"
-                android:paddingLeft="10dp"/>
-            <TextView
-                android:id="@+id/txt_notes"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:textSize="15sp"
-                android:text="I am in meeting"
-                android:paddingLeft="10dp"/>
-            <TextView
-                android:id="@+id/txt_time"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:textSize="15sp"
-                android:text="6:45 PM"
-                android:paddingLeft="10dp"/>
-        </LinearLayout>
-    </LinearLayout>
 
     </LinearLayout>
 </android.support.v7.widget.CardView>
