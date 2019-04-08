@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 28
+    buildToolsVersion "28.0.3"
     defaultConfig {
         applicationId "app.food.patient_app"
         minSdkVersion 18
@@ -59,7 +60,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-fitness:16.0.1'
     implementation 'com.google.android.gms:play-services-auth:16.0.1'
 
-
+    implementation 'com.github.AnyChart:AnyChart-Android:1.1.2'
 
 }
 apply plugin: 'com.google.gms.google-services'
