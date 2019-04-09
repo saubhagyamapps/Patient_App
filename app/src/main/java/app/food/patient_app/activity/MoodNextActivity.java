@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -194,6 +195,7 @@ public class MoodNextActivity extends AppCompatActivity {
                 if (response.body().getStatus().equals("0")) {
                     Toast.makeText(MoodNextActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(MoodNextActivity.this, NavigationActivity.class));
+
 
                 } else {
                     Toast.makeText(MoodNextActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();

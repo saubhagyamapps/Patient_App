@@ -67,14 +67,33 @@ public class MoodActivity extends AppCompatActivity  {
             @Override
             public void onClick(View v) {
                 mMood ="Happy";
+                image_Happy.setColorFilter(getResources().getColor(R.color.tinColorIcon_s), PorterDuff.Mode.SRC_IN);
+                image_inLOve.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_Smiling.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_Angry.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_Confused.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_Mad.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_Sad.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_smilingHappy.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_UnHappy.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_VeryHappy.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
                 IntenMethod(mMood,image_Happy);
             }
         });
         image_inLOve.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 mMood ="In Love";
+                image_inLOve.setColorFilter(getResources().getColor(R.color.tinColorIcon_s), PorterDuff.Mode.SRC_IN);
+                image_Happy.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_Smiling.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_Angry.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_Confused.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_Mad.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_Sad.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_smilingHappy.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_UnHappy.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_VeryHappy.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
                 IntenMethod(mMood, image_inLOve);
             }
         });
@@ -82,6 +101,16 @@ public class MoodActivity extends AppCompatActivity  {
             @Override
             public void onClick(View v) {
                 mMood ="Smiling";
+                image_Smiling.setColorFilter(getResources().getColor(R.color.tinColorIcon_s), PorterDuff.Mode.SRC_IN);
+                image_Happy.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_inLOve.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_Angry.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_Confused.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_Mad.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_Sad.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_smilingHappy.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_UnHappy.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_VeryHappy.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
                 IntenMethod(mMood, image_Smiling);
             }
         });
@@ -89,6 +118,16 @@ public class MoodActivity extends AppCompatActivity  {
             @Override
             public void onClick(View v) {
                 mMood ="Angry";
+                image_Angry.setColorFilter(getResources().getColor(R.color.tinColorIcon_s), PorterDuff.Mode.SRC_IN);
+                image_Happy.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_inLOve.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_Smiling.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_Confused.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_Mad.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_Sad.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_smilingHappy.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_UnHappy.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_VeryHappy.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
                 IntenMethod(mMood, image_Angry);
             }
         });
@@ -96,6 +135,17 @@ public class MoodActivity extends AppCompatActivity  {
             @Override
             public void onClick(View v) {
                 mMood ="Confused";
+                image_Confused.setColorFilter(getResources().getColor(R.color.tinColorIcon_s), PorterDuff.Mode.SRC_IN);
+                image_Happy.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_inLOve.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_Smiling.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_Angry.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_Mad.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_Sad.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_smilingHappy.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_UnHappy.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_VeryHappy.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+
                 IntenMethod(mMood, image_Confused);
             }
         });
@@ -103,6 +153,16 @@ public class MoodActivity extends AppCompatActivity  {
             @Override
             public void onClick(View v) {
                 mMood ="Mad";
+                image_Mad.setColorFilter(getResources().getColor(R.color.tinColorIcon_s), PorterDuff.Mode.SRC_IN);
+                image_Happy.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_inLOve.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_Smiling.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_Angry.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_Confused.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_Sad.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_smilingHappy.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_UnHappy.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_VeryHappy.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
                 IntenMethod(mMood, image_Mad);
             }
         });
@@ -110,6 +170,16 @@ public class MoodActivity extends AppCompatActivity  {
             @Override
             public void onClick(View v) {
                 mMood ="Sad";
+                image_Sad.setColorFilter(getResources().getColor(R.color.tinColorIcon_s), PorterDuff.Mode.SRC_IN);
+                image_Happy.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_inLOve.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_Smiling.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_Angry.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_Confused.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_Mad.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_smilingHappy.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_UnHappy.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_VeryHappy.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
                 IntenMethod(mMood, image_Sad);
             }
         });
@@ -117,6 +187,16 @@ public class MoodActivity extends AppCompatActivity  {
             @Override
             public void onClick(View v) {
                 mMood ="Smiling Happy";
+                image_smilingHappy.setColorFilter(getResources().getColor(R.color.tinColorIcon_s), PorterDuff.Mode.SRC_IN);
+                image_Happy.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_inLOve.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_Smiling.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_Angry.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_Confused.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_Mad.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_Sad.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_UnHappy.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_VeryHappy.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
                 IntenMethod(mMood, image_smilingHappy);
             }
         });
@@ -124,7 +204,16 @@ public class MoodActivity extends AppCompatActivity  {
             @Override
             public void onClick(View v) {
                 mMood ="Unhappy";
-
+                image_UnHappy.setColorFilter(getResources().getColor(R.color.tinColorIcon_s), PorterDuff.Mode.SRC_IN);
+                image_Happy.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_inLOve.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_Smiling.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_Angry.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_Confused.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_Mad.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_Sad.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_smilingHappy.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_VeryHappy.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
                 IntenMethod(mMood, image_UnHappy);
             }
         });
@@ -132,6 +221,16 @@ public class MoodActivity extends AppCompatActivity  {
             @Override
             public void onClick(View v) {
                 mMood ="Very Happy";
+                image_VeryHappy.setColorFilter(getResources().getColor(R.color.tinColorIcon_s), PorterDuff.Mode.SRC_IN);
+                image_Happy.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_inLOve.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_Smiling.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_Angry.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_Confused.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_Mad.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_Sad.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_UnHappy.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
+                image_smilingHappy.setColorFilter(getResources().getColor(R.color.tinColorIcon_us), PorterDuff.Mode.SRC_IN);
                 IntenMethod(mMood, image_VeryHappy);
             }
         });
@@ -144,4 +243,5 @@ public class MoodActivity extends AppCompatActivity  {
         intent.putExtra("moodkey",moodKey);
         startActivity(intent);
     }
+
 }

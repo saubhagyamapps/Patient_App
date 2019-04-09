@@ -125,7 +125,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void openMainScreen() {
-        Intent intent=new Intent(RegisterActivity.this,Login_Regi_Activity.class);
+        Intent intent = new Intent(RegisterActivity.this, Login_Regi_Activity.class);
         startActivity(intent);
         finish();
         overridePendingTransition(R.anim.slide_left_exit, R.anim.slide_left_enter);

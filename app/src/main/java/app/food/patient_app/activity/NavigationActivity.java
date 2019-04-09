@@ -47,6 +47,7 @@ import java.util.StringTokenizer;
 
 import app.food.patient_app.R;
 import app.food.patient_app.fragment.CallLogsFragment;
+import app.food.patient_app.fragment.DashBoardFragment;
 import app.food.patient_app.fragment.GetCurrentLocationFragment;
 import app.food.patient_app.fragment.GoogleFitDataFragment;
 import app.food.patient_app.fragment.MoodCalendarFragment;
@@ -100,7 +101,7 @@ public class NavigationActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction ft = fragmentManager.beginTransaction();
-        ft.replace(R.id.content_frame, new MoodCalendarFragment());
+        ft.replace(R.id.content_frame, new DashBoardFragment());
         ft.commit();
         setNotifacation();
         sessionManager = new SessionManager(NavigationActivity.this);
@@ -217,8 +218,9 @@ public class NavigationActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         fragment = null;
-        //fragment = new MoodCalendarFragment();
+
         if (id == R.id.nav_manage) {
+            fragment = new DashBoardFragment();
         } else if (id == R.id.nav_calendar) {
             fragment = new MoodCalendarFragment();
         } else if (id == R.id.nav_calllogs) {
@@ -426,4 +428,6 @@ public class NavigationActivity extends AppCompatActivity
                      }
         );
     }
+
+
 }
