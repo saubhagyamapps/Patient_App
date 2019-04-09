@@ -272,13 +272,14 @@ public class GetCurrentLocationFragment extends Fragment implements OnMapReadyCa
             @Override
             public void onResponse(Call<AddressTimeModel> call, Response<AddressTimeModel> response) {
                 try {
-                    txtAddressHome.setText(response.body().getHome_result().get(0).getAddress());
-                    txtTime.setText(response.body().getHome_result().get(0).getTime_difference());
                     Log.e("Size of getdata", response.body().getResult().size() + "");
                     mAdapter = new LocationAddressTimeAdepter(response.body().getResult(), getActivity());
                     recycleviewLocation.setHasFixedSize(true);
                     mAdapter.notifyDataSetChanged();
                     recycleviewLocation.setAdapter(mAdapter);
+                    txtAddressHome.setText(response.body().getHome_result().get(0).getAddress());
+                    txtTime.setText(response.body().getHome_result().get(0).getTime_difference());
+
                 }catch (Exception e){
 
                 }
@@ -287,7 +288,7 @@ public class GetCurrentLocationFragment extends Fragment implements OnMapReadyCa
 
             @Override
             public void onFailure(Call<AddressTimeModel> call, Throwable t) {
-
+                Log.e(TAG, "onFailure: "+t.getMessage() );
             }
         });
     }
