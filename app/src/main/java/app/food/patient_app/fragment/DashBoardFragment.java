@@ -22,12 +22,13 @@ import app.food.patient_app.R;
 
 public class DashBoardFragment extends Fragment {
     View mView;
-    TextView txt_Sleep_Percentage,txt_Social_Percentage,txt_Work_Percentage,txt_Exercise_Percentage;
+    TextView txt_Sleep_Percentage, txt_Social_Percentage, txt_Work_Percentage, txt_Exercise_Percentage;
     CircularProgressBar Sleep_Progressbar, Social_Progressbar, Work_Progressbar, Exercise_Progressbar;
     LinearLayout Sleep_Layout, Social_Layout, Work_Layout, Exercise_Layout;
     RelativeLayout Mood_Layout;
     Drawable drawable;
     Resources res;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -39,53 +40,63 @@ public class DashBoardFragment extends Fragment {
         Clicked();
         return mView;
     }
-    private void  Initialize()
-    {
+
+    private void Initialize() {
 
         Sleep_Progressbar = mView.findViewById(R.id.sleep_progress_bar);
         Social_Progressbar = mView.findViewById(R.id.social_progress_bar);
-        Work_Progressbar = mView.findViewById(R.id.work_progress_bar);
-        Exercise_Progressbar = mView.findViewById(R.id.work_progress_bar);
+        Work_Progressbar = mView.findViewById(R.id.testss);
+        Exercise_Progressbar = mView.findViewById(R.id.test2);
        /* Sleep_Layout = mView.findViewById(R.id.sleep_layout);
         Social_Layout = mView.findViewById(R.id.social_layout);
         Work_Layout = mView.findViewById(R.id.work_layout);
         Exercise_Layout = mView.findViewById(R.id.exercise_layout);*/
-        Mood_Layout =mView.findViewById(R.id.mood_layout_);
+        Mood_Layout = mView.findViewById(R.id.mood_layout_);
         txt_Sleep_Percentage = mView.findViewById(R.id.txt_sleep_percentage);
         txt_Social_Percentage = mView.findViewById(R.id.txt_social_percentage);
         txt_Work_Percentage = mView.findViewById(R.id.txt_work_percentage);
         txt_Exercise_Percentage = mView.findViewById(R.id.txt_exercise_percentage);
 
     }
-    public void SetProgressBars()
-    {
+
+    public void SetProgressBars() {
         Sleep_Progressbar.setMaximum(100);
         Sleep_Progressbar.setProgress(45f);
+        Sleep_Progressbar.setIndeterminateRotationAnimationDuration(2000);
+        Sleep_Progressbar.setProgressAnimationDuration(2000);
         Sleep_Progressbar.setAnimateProgress(true);
-        txt_Sleep_Percentage.setText(45+"%");
+        txt_Sleep_Percentage.setText(45 + "%");
 
         Social_Progressbar.setMaximum(100);
         Social_Progressbar.setProgress(40f);
-        txt_Social_Percentage.setText(40+"%");
+        Social_Progressbar.setIndeterminateRotationAnimationDuration(2000);
+        Social_Progressbar.setProgressAnimationDuration(2000);
+        Social_Progressbar.setAnimateProgress(true);
+        txt_Social_Percentage.setText(40 + "%");
 
         Work_Progressbar.setMaximum(100);
-        Work_Progressbar.setProgress(30f);
-        txt_Work_Percentage.setText(30+"%");
+        Work_Progressbar.setProgress(65f);
+        Work_Progressbar.setIndeterminateRotationAnimationDuration(2000);
+        Work_Progressbar.setProgressAnimationDuration(2000);
+        Work_Progressbar.setAnimateProgress(true);
+        txt_Work_Percentage.setText(65 + "%");
 
         Exercise_Progressbar.setMaximum(100);
         Exercise_Progressbar.setProgress(20f);
-        txt_Exercise_Percentage.setText(20+"%");
+        Exercise_Progressbar.setIndeterminateRotationAnimationDuration(2000);
+        Exercise_Progressbar.setProgressAnimationDuration(2000);
+        Exercise_Progressbar.setAnimateProgress(true);
+        txt_Exercise_Percentage.setText(20 + "%");
 
     }
 
-    private void Clicked()
-    {
+    private void Clicked() {
         Mood_Layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                FragmentManager fragmentManager =  getActivity().getSupportFragmentManager();
-                FragmentTransaction ft =  fragmentManager.beginTransaction();
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                FragmentTransaction ft = fragmentManager.beginTransaction();
                 ft.replace(R.id.content_frame, new MoodCalendarFragment());
                 ft.addToBackStack(null);
                 ft.commit();
