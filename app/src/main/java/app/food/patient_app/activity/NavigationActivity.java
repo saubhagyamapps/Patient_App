@@ -1,14 +1,12 @@
 package app.food.patient_app.activity;
 
+import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.CallLog;
 import android.provider.MediaStore;
@@ -19,7 +17,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -28,8 +25,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 
@@ -52,7 +47,11 @@ import app.food.patient_app.fragment.GetCurrentLocationFragment;
 import app.food.patient_app.fragment.GoogleFitDataFragment;
 import app.food.patient_app.fragment.MoodCalendarFragment;
 import app.food.patient_app.fragment.ResetPasswordFragment;
+
 import app.food.patient_app.fragment.WorkLocationFragment;
+
+import app.food.patient_app.lockcount.IndicatorService;
+
 import app.food.patient_app.lockscreen.LockScreenCountActivity;
 import app.food.patient_app.model.CalllogsListModel;
 import app.food.patient_app.model.RemainingCallModel;
@@ -65,8 +64,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import static app.food.patient_app.util.Constant.session;
 
 public class NavigationActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -83,6 +80,8 @@ public class NavigationActivity extends AppCompatActivity
     NavigationView navigationView;
     TextView txtName, txtEmail;
     CircleImageView imgUser;
+    SharedPreferences prefs = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,9 +113,28 @@ public class NavigationActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-         navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         setnavigationHeader();
+        LockCountServiceRun();
+    }
+
+    private void LockCountServiceRun() {
+        if(!isServiceRunning(IndicatorService.class)) {
+            startService(new Intent(this, IndicatorService.class));
+            Log.e("TAG","TSG");
+        }
+
+    }
+    private boolean isServiceRunning(Class<IndicatorService> serviceClass){
+        ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+
+        for(ActivityManager.RunningServiceInfo service : activityManager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
 
@@ -150,7 +168,7 @@ public class NavigationActivity extends AppCompatActivity
         View header = navigationView.getHeaderView(0);
         txtName = (TextView) header.findViewById(R.id.txtName);
         txtEmail = (TextView) header.findViewById(R.id.txtEmail);
-    //    imgUser = header.findViewById(R.id.imageView);
+        //    imgUser = header.findViewById(R.id.imageView);
         txtName.setText(Constant.mUserName.toUpperCase());
         txtEmail.setText(Constant.mUserEmail);
       /*  Glide.with(getApplicationContext()).load(user.get(session.KEY_IMAGE))
@@ -210,7 +228,6 @@ public class NavigationActivity extends AppCompatActivity
         getMenuInflater().inflate(R.menu.navigation, menu);
         return true;
     }
-
 
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -289,7 +306,7 @@ public class NavigationActivity extends AppCompatActivity
                         getCallDetails(response.body().getResult().get(i));
 
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
 
                 }
 

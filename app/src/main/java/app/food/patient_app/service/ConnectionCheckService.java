@@ -77,7 +77,7 @@ public class ConnectionCheckService extends Service {
 
         final Runnable r = new Runnable() {
             public void run() {
-                Log.e(TAG, "startForegroundService: " + hasConnection());
+            //    Log.e(TAG, "startForegroundService: " + hasConnection());
                 handler.postDelayed(this, 1000);
                 if(!hasConnection()) {
 
