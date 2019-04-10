@@ -76,7 +76,7 @@ public class CallLogsFragment extends Fragment implements MessageListener {
     String mCurrentDate;
     RecyclerView recyclerView_apps;
     AppUsageMonthlyAdaptar appUsageMonthlyAdaptar;
-    TextView txtToday_Add_contact, txtToday_Add_images,txt_current_date,txt_Sms_Count;
+    TextView txtToday_Add_contact, txtToday_Add_images,txt_current_date,txt_Sms_Count,txt_lockScreenCount;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -100,6 +100,7 @@ public class CallLogsFragment extends Fragment implements MessageListener {
         ContactName = new ArrayList();
         contactInfoArray = new ArrayList<>();
         txtToday_Add_contact = mView.findViewById(R.id.txtToday_Add_contact);
+        txt_lockScreenCount = mView.findViewById(R.id.txt_lockScreenCount);
         txtToday_Add_images = mView.findViewById(R.id.txtToday_Add_images);
         txt_current_date = mView.findViewById(R.id.txt_current_date);
         txt_Date = mView.findViewById(R.id.txt_date);
@@ -121,6 +122,12 @@ public class CallLogsFragment extends Fragment implements MessageListener {
         getNewCountactList();
         getFilePaths(getActivity());
         GetSMSCount();
+        setLockScreenCount();
+    }
+
+    private void setLockScreenCount() {
+        Log.e(TAG, "setLockScreenCount: " +Constant.mLockCounter);
+        txt_lockScreenCount.setText(Constant.mLockCounter);
     }
 
     public void getFilePaths(Context context) {

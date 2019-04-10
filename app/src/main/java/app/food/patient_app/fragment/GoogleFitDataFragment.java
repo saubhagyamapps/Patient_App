@@ -18,30 +18,24 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.fitness.Fitness;
-import com.google.android.gms.fitness.FitnessActivities;
 import com.google.android.gms.fitness.data.Bucket;
 import com.google.android.gms.fitness.data.DataPoint;
 import com.google.android.gms.fitness.data.DataSet;
 import com.google.android.gms.fitness.data.DataSource;
 import com.google.android.gms.fitness.data.DataType;
 import com.google.android.gms.fitness.data.Field;
-import com.google.android.gms.fitness.data.Session;
 import com.google.android.gms.fitness.data.Value;
 import com.google.android.gms.fitness.request.DataReadRequest;
 import com.google.android.gms.fitness.request.DataSourcesRequest;
 import com.google.android.gms.fitness.request.OnDataPointListener;
 import com.google.android.gms.fitness.request.SensorRequest;
-import com.google.android.gms.fitness.request.SessionInsertRequest;
-import com.google.android.gms.fitness.request.SessionReadRequest;
 import com.google.android.gms.fitness.result.DailyTotalResult;
 import com.google.android.gms.fitness.result.DataReadResult;
 import com.google.android.gms.fitness.result.DataSourcesResult;
-import com.google.android.gms.fitness.result.SessionReadResult;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 
@@ -50,6 +44,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -64,7 +59,6 @@ import app.food.patient_app.model.CaloriesDataModel;
 import app.food.patient_app.model.GetCaloriesModel;
 import app.food.patient_app.model.GetGooGleFitActivityModel;
 import app.food.patient_app.model.InsetCaloriesDataModel;
-import app.food.patient_app.util.AppUtil;
 import app.food.patient_app.util.Constant;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -110,13 +104,12 @@ public class GoogleFitDataFragment extends Fragment implements OnDataPointListen
     private void displayStepDataForToday() {
 
 
-
-        DailyTotalResult result = Fitness.HistoryApi.readDailyTotal( mApiClient, DataType.TYPE_STEP_COUNT_DELTA ).await(1, TimeUnit.MINUTES);
+        DailyTotalResult result = Fitness.HistoryApi.readDailyTotal(mApiClient, DataType.TYPE_STEP_COUNT_DELTA).await(1, TimeUnit.MINUTES);
         showDataSet(result.getTotal());
     }
 
     private void showDataSet(DataSet total) {
-        Log.e(TAG, "showDataSet: "+total );
+        Log.e(TAG, "showDataSet: " + total);
     }
 
     private void initialize() {
@@ -140,6 +133,7 @@ public class GoogleFitDataFragment extends Fragment implements OnDataPointListen
                 .addScope(new Scope(Scopes.FITNESS_BODY_READ))
                 .addScope(new Scope(Scopes.FITNESS_BODY_READ_WRITE))
                 .addScope(new Scope(Scopes.FITNESS_LOCATION_READ_WRITE))
+                .addScope(new Scope(Scopes.DRIVE_APPS))
                 .addConnectionCallbacks(this)
                 .enableAutoManage(getActivity(), 0, this)
                 .addOnConnectionFailedListener(this)
@@ -196,28 +190,51 @@ public class GoogleFitDataFragment extends Fragment implements OnDataPointListen
             }
         });
 
-
+        Calendar calendar = Calendar.getInstance();
         //Call History API For Activity Code & Duration//
 
+        Date c = Calendar.getInstance().getTime();
+        System.out.println("Current time => " + c);
+
+        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        String formattedDate = df.format(c);
+        Log.e(TAG, "formattedDate: "+formattedDate );
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-M-yyyy hh:mm:ss");
+        String dateString = formattedDate+" 00:00:00";
+        try {
+            //formatting the dateString to convert it into a Date
+            Date date = sdf.parse(dateString);
+            System.out.println("Given Time in milliseconds : " + date.getTime());
+
+
+            //Setting the Calendar date and time to the given date and time
+            calendar.setTime(date);
+            System.out.println("Given Time in milliseconds : " + calendar.getTimeInMillis());
+            Log.e(TAG, "cureent date ---> " +calendar.getTimeInMillis());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         cal = Calendar.getInstance();
         now = new Date();
         cal.setTime(now);
         endTime = cal.getTimeInMillis();
         cal.add(Calendar.DATE, -1);
-        startTime = cal.getTimeInMillis();
+      //  startTime = cal.getTimeInMillis();
+        startTime = calendar.getTimeInMillis();
         dateFormat = DateFormat.getDateInstance();
         Log.e("History", "Range Start: " + dateFormat.format(startTime));
         Log.e("History", "Range End: " + dateFormat.format(endTime));
 
         DataReadRequest readRequest = new DataReadRequest.Builder()
                 .aggregate(DataType.TYPE_ACTIVITY_SEGMENT, DataType.AGGREGATE_ACTIVITY_SUMMARY)
-              //  .aggregate(DataType.TYPE_CALORIES_EXPENDED,DataType.AGGREGATE_CALORIES_EXPENDED)
+                //  .aggregate(DataType.TYPE_CALORIES_EXPENDED,DataType.AGGREGATE_CALORIES_EXPENDED)
                 .bucketByTime(1, TimeUnit.DAYS)
-               // .bucketByTime(1, TimeUnit.MINUTES)
+                // .bucketByTime(1, TimeUnit.MINUTES)
                 .setTimeRange(startTime, endTime, TimeUnit.MILLISECONDS)
                 .build();
 
-        Log.e(TAG, "onConnected: "+startTime+"--->" +endTime);
+        Log.e(TAG, "onConnected: " + startTime + "--->" + endTime);
         Fitness.HistoryApi.readData(mApiClient, readRequest).setResultCallback(new ResultCallback<DataReadResult>() {
             @Override
             public void onResult(@NonNull DataReadResult dataReadResult) {
@@ -281,9 +298,14 @@ public class GoogleFitDataFragment extends Fragment implements OnDataPointListen
         // For Calories
         DataReadRequest readRequest1 = new DataReadRequest.Builder()
                 .aggregate(DataType.TYPE_CALORIES_EXPENDED, DataType.AGGREGATE_CALORIES_EXPENDED)
-                .bucketByTime(1, TimeUnit.DAYS)
+                .bucketByTime(5, TimeUnit.DAYS)
                 .setTimeRange(startTime, endTime, TimeUnit.MILLISECONDS)
                 .build();
+        Log.e(TAG, "date formate " + startTime);
+        long time = System.currentTimeMillis();
+        Log.e("Time Class ", " Time value in millisecinds " + time);
+
+
         Fitness.HistoryApi.readData(mApiClient, readRequest1).setResultCallback(new ResultCallback<DataReadResult>() {
             @Override
             public void onResult(@NonNull DataReadResult dataReadResult) {

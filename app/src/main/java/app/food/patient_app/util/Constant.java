@@ -37,6 +37,7 @@ public class Constant {
     public static String mDeviceId;
     public static String mHomeLat;
     public static String mHomeLong;
+    public static String mLockCounter;
 
     public static void progressDialog(Context applicationContext) {
         progressBar = new ProgressDialog(applicationContext);

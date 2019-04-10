@@ -1,6 +1,9 @@
 package app.food.patient_app.app;
 
+import android.app.ActivityManager;
 import android.app.Application;
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
@@ -22,6 +25,7 @@ import app.food.patient_app.data.AppItem;
 import app.food.patient_app.data.DataManager;
 import app.food.patient_app.db.DbHistoryExecutor;
 import app.food.patient_app.db.DbIgnoreExecutor;
+import app.food.patient_app.lockcount.IndicatorService;
 import app.food.patient_app.util.CrashHandler;
 import app.food.patient_app.util.PreferenceManager;
 
@@ -40,6 +44,7 @@ public class MyApplication extends Application {
         if (AppConst.CRASH_TO_FILE) CrashHandler.getInstance().init();
         initAppsFlyer();
         getHashkey();
+
 
     }
 
