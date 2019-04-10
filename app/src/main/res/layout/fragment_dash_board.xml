@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context=".fragment.DashBoardFragment">
 
@@ -21,10 +21,12 @@
             android:layout_marginStart="10dp"
             android:background="@drawable/sleep_circle_layout"
             android:orientation="vertical">
+
             <com.budiyev.android.circularprogressbar.CircularProgressBar
                 android:id="@+id/sleep_progress_bar"
                 android:layout_width="120dp"
                 android:layout_height="120dp"
+                android:layout_centerInParent="true"
                 app:animateProgress="true"
                 app:backgroundStrokeColor="@color/white"
                 app:backgroundStrokeWidth="3dp"
@@ -33,30 +35,29 @@
                 app:foregroundStrokeColor="@color/black"
                 app:foregroundStrokeWidth="3dp"
                 app:indeterminate="false"
-                android:layout_centerInParent="true"
+                app:indeterminateMinimumAngle="45"
                 app:indeterminateRotationAnimationDuration="1200"
                 app:indeterminateSweepAnimationDuration="600"
-                app:indeterminateMinimumAngle="45"
                 app:maximum="100"
                 app:progress="25"
                 app:progressAnimationDuration="100"
-                app:startAngle="270"/>
-            <!--<ImageView
-                android:layout_width="90dp"
-                android:layout_height="90dp"
-                android:layout_centerInParent="true"/>-->
+                app:startAngle="270" />
+
+            <!--<ImageViewandroid:layout_width="90dp"android:layout_height="90dp"android:layout_centerInParent="true"/>-->
+
 
             <TextView
                 android:id="@+id/txt_sleep_percentage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textStyle="bold"
                 android:layout_centerInParent="true"
+                android:gravity="center"
                 android:textColor="@color/black"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
         </RelativeLayout>
+
 
         <RelativeLayout
             android:id="@+id/social_layout"
@@ -70,6 +71,7 @@
                 android:id="@+id/social_progress_bar"
                 android:layout_width="120dp"
                 android:layout_height="120dp"
+                android:layout_centerInParent="true"
                 app:animateProgress="true"
                 app:backgroundStrokeColor="@color/white"
                 app:backgroundStrokeWidth="3dp"
@@ -78,35 +80,42 @@
                 app:foregroundStrokeColor="@color/black"
                 app:foregroundStrokeWidth="3dp"
                 app:indeterminate="false"
-                android:layout_centerInParent="true"
+                app:indeterminateMinimumAngle="45"
                 app:indeterminateRotationAnimationDuration="1200"
                 app:indeterminateSweepAnimationDuration="600"
                 app:maximum="100"
                 app:progress="25"
-                app:indeterminateMinimumAngle="45"
                 app:progressAnimationDuration="100"
-                app:startAngle="270"/>
+                app:startAngle="270" />
 
             <TextView
                 android:id="@+id/txt_social_percentage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textStyle="bold"
                 android:layout_centerInParent="true"
+                android:gravity="center"
                 android:textColor="@color/black"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
         </RelativeLayout>
 
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/mood_layout_"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:padding="20dp"
-        android:background="@drawable/dashboard_smily"></RelativeLayout>
+        android:layout_centerInParent="true">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:padding="100dp"
+            android:src="@drawable/dashboard_smily" />
+    </RelativeLayout>
+
 
     <RelativeLayout
         android:id="@+id/lower_layout"
@@ -114,6 +123,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="10dp">
+
 
         <RelativeLayout
             android:id="@+id/work_layout"
@@ -126,6 +136,7 @@
                 android:id="@+id/work_progress_bar"
                 android:layout_width="120dp"
                 android:layout_height="120dp"
+                android:layout_centerInParent="true"
                 app:animateProgress="true"
                 app:backgroundStrokeColor="@color/white"
                 app:backgroundStrokeWidth="2dp"
@@ -134,25 +145,26 @@
                 app:foregroundStrokeColor="@color/black"
                 app:foregroundStrokeWidth="3dp"
                 app:indeterminate="false"
-                android:layout_centerInParent="true"
+                app:indeterminateMinimumAngle="45"
                 app:indeterminateRotationAnimationDuration="1200"
                 app:indeterminateSweepAnimationDuration="600"
-                app:indeterminateMinimumAngle="45"
                 app:maximum="100"
                 app:progress="50"
                 app:progressAnimationDuration="100"
-                app:startAngle="270"/>
+                app:startAngle="270" />
 
             <TextView
                 android:id="@+id/txt_work_percentage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textStyle="bold"
                 android:layout_centerInParent="true"
+                android:gravity="center"
                 android:textColor="@color/black"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
         </RelativeLayout>
+
 
         <RelativeLayout
             android:id="@+id/exercise_layout"
@@ -166,6 +178,7 @@
                 android:id="@+id/exercise_progress_bar"
                 android:layout_width="120dp"
                 android:layout_height="120dp"
+                android:layout_centerInParent="true"
                 app:animateProgress="true"
                 app:backgroundStrokeColor="@color/white"
                 app:backgroundStrokeWidth="2dp"
@@ -174,24 +187,24 @@
                 app:foregroundStrokeColor="@color/black"
                 app:foregroundStrokeWidth="3dp"
                 app:indeterminate="false"
-                android:layout_centerInParent="true"
+                app:indeterminateMinimumAngle="45"
                 app:indeterminateRotationAnimationDuration="1200"
                 app:indeterminateSweepAnimationDuration="600"
-                app:indeterminateMinimumAngle="45"
                 app:maximum="100"
                 app:progress="50"
                 app:progressAnimationDuration="100"
-                app:startAngle="270"/>
+                app:startAngle="270" />
 
             <TextView
                 android:id="@+id/txt_exercise_percentage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textStyle="bold"
                 android:layout_centerInParent="true"
+                android:gravity="center"
                 android:textColor="@color/black"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
         </RelativeLayout>
 
     </RelativeLayout>
