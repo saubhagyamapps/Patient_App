@@ -54,7 +54,9 @@ import java.util.Locale;
 import app.food.patient_app.R;
 import app.food.patient_app.adapter.PlaceArrayAdapter;
 import app.food.patient_app.model.HomeLocationStoreModel;
+import app.food.patient_app.model.InsertWorkLocationModel;
 import app.food.patient_app.model.StoreCurrentHomeAddressModel;
+import app.food.patient_app.model.WorkTimeDiffrentModel;
 import app.food.patient_app.util.Constant;
 import app.food.patient_app.util.TrackerService;
 import retrofit2.Call;
@@ -138,8 +140,7 @@ public class WorkLocationFragment extends Fragment implements OnMapReadyCallback
 
                 txtAddress.setText(address);
                 Log.e(TAG, " only city address----->" + address.replace(", " + state, "").replace(postalCode + ",", "").replace(country, ""));
-              //  StoreCurrentWorkAddress(address, String.valueOf(LATITUDE), String.valueOf(LONGITUDE));
-              //  StoreWorkAddress(address, String.valueOf(LATITUDE), String.valueOf(LONGITUDE));
+                StoreWorkAddress(address, String.valueOf(LATITUDE), String.valueOf(LONGITUDE));
 
             }
         } catch (IOException e) {
@@ -156,15 +157,15 @@ public class WorkLocationFragment extends Fragment implements OnMapReadyCallback
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         mCurrentDate = df.format(todayDate);
         Constant.setSession(getActivity());
-        Call<HomeLocationStoreModel> storeModelCall = Constant.apiService.storeHomeLocation(Constant.mUserId, mCurrentDate, address, LATITUDE, LONGITUDE);
-        storeModelCall.enqueue(new Callback<HomeLocationStoreModel>() {
+        Call<InsertWorkLocationModel> storeModelCall = Constant.apiService.insertWorkLocation(Constant.mUserId, address, LATITUDE, LONGITUDE);
+        storeModelCall.enqueue(new Callback<InsertWorkLocationModel>() {
             @Override
-            public void onResponse(Call<HomeLocationStoreModel> call, Response<HomeLocationStoreModel> response) {
+            public void onResponse(Call<InsertWorkLocationModel> call, Response<InsertWorkLocationModel> response) {
 
             }
 
             @Override
-            public void onFailure(Call<HomeLocationStoreModel> call, Throwable t) {
+            public void onFailure(Call<InsertWorkLocationModel> call, Throwable t) {
 
             }
         });
@@ -181,6 +182,7 @@ public class WorkLocationFragment extends Fragment implements OnMapReadyCallback
         initialization();
         requestLocationUpdates();
         distance(23.077629f, 72.505712f, 23.077777f, 72.504929f);
+
         return mView;
     }
 
@@ -228,9 +230,33 @@ public class WorkLocationFragment extends Fragment implements OnMapReadyCallback
         mAutocompleteTextViewTo_workLocation.setAdapter(mPlaceArrayAdapter);
         txtDate.setText(Constant.currentDate());
          editButtonClick();
-       // AddressAndTimeListAPICALL();
+        AddressAndTimeListAPICALL();
+
 
     }
+
+    private void AddressAndTimeListAPICALL() {
+
+        Call<WorkTimeDiffrentModel> modelCall=Constant.apiService.getWorkTime(Constant.mUserId,Constant.currentDate());
+        modelCall.enqueue(new Callback<WorkTimeDiffrentModel>() {
+            @Override
+            public void onResponse(Call<WorkTimeDiffrentModel> call, Response<WorkTimeDiffrentModel> response) {
+                try {
+                    txtTime.setText(response.body().getResult().get(0).getTime_difference());
+                    txtAddressHome.setText(response.body().getResult().get(0).getAddress());
+                    txtDate.setText(Constant.currentDate());
+                }catch (Exception e){
+                    Log.e(TAG, "onResponse: "+e.getMessage() );
+                }
+            }
+
+            @Override
+            public void onFailure(Call<WorkTimeDiffrentModel> call, Throwable t) {
+
+            }
+        });
+    }
+
     @Override
     public void onPause() {
         super.onPause();
@@ -266,24 +292,6 @@ public class WorkLocationFragment extends Fragment implements OnMapReadyCallback
             @Override
             public void onClick(View v) {
 
-            }
-        });
-    }
-
-    public void StoreCurrentWorkAddress(String address, String lat, String log) {
-        txtAddress.setText(address);
-        Call<StoreCurrentHomeAddressModel> modelCall = Constant.apiService.storeLocation(Constant.mUserId, address, lat, log);
-        modelCall.enqueue(new Callback<StoreCurrentHomeAddressModel>() {
-            @Override
-            public void onResponse(Call<StoreCurrentHomeAddressModel> call, Response<StoreCurrentHomeAddressModel> response) {
-                locationView.setVisibility(View.GONE);
-                Constant.progressBar.dismiss();
-                txtAddress.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onFailure(Call<StoreCurrentHomeAddressModel> call, Throwable t) {
-                Constant.progressBar.dismiss();
             }
         });
     }

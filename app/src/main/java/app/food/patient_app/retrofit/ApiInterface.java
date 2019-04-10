@@ -3,6 +3,7 @@ package app.food.patient_app.retrofit;
 import app.food.patient_app.model.AddressTimeModel;
 import app.food.patient_app.model.AllCallsDataModel;
 import app.food.patient_app.model.CaloriesDataModel;
+import app.food.patient_app.model.ChangeWorkLocationModel;
 import app.food.patient_app.model.ForgotPasswordModel;
 import app.food.patient_app.model.GetCaloriesModel;
 import app.food.patient_app.model.GetGooGleFitActivityModel;
@@ -12,6 +13,7 @@ import app.food.patient_app.model.GetSMSCountModel;
 import app.food.patient_app.model.GetSocialUsageListModel;
 import app.food.patient_app.model.HomeLocationStoreModel;
 import app.food.patient_app.model.ImageCountModel;
+import app.food.patient_app.model.InsertWorkLocationModel;
 import app.food.patient_app.model.InsetCaloriesDataModel;
 import app.food.patient_app.model.LocationChgangeModel;
 import app.food.patient_app.model.LoginModel;
@@ -25,7 +27,9 @@ import app.food.patient_app.model.RemainingCallModel;
 import app.food.patient_app.model.ResetPasswordModel;
 import app.food.patient_app.model.SendSMSCountModel;
 import app.food.patient_app.model.StoreCurrentHomeAddressModel;
+import app.food.patient_app.model.WorkTimeDiffrentModel;
 import retrofit2.Call;
+import retrofit2.Response;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
@@ -184,6 +188,7 @@ public interface ApiInterface {
                                                      @Field("address") String address,
                                                      @Field("latitude") String latitude,
                                                      @Field("longitude") String longitude);
+
     @FormUrlEncoded
     @POST("home_location")
     Call<HomeLocationStoreModel> storeHomeLocation(@Field("user_id") String user_id,
@@ -213,4 +218,22 @@ public interface ApiInterface {
                                           @Field("image") String image,
                                           @Field("device_id") String device_id,
                                           @Field("firebase_id") String firebase_id);
+
+    @FormUrlEncoded
+    @POST("work_location_insert")
+    Call<InsertWorkLocationModel> insertWorkLocation(@Field("user_id") String user_id,
+                                                     @Field("address") String address,
+                                                     @Field("latitude") String latitude,
+                                                     @Field("longitude") String longitude);
+    @FormUrlEncoded
+    @POST("work_location")
+    Call<ChangeWorkLocationModel> StoreWorkLocarion(@Field("user_id") String user_id,
+                                                    @Field("address") String address,
+                                                    @Field("latitude") String latitude,
+                                                    @Field("longitude") String longitude,
+                                                    @Field("date") String date);
+    @FormUrlEncoded
+    @POST("time_difference_of_work_location")
+    Call<WorkTimeDiffrentModel> getWorkTime(@Field("user_id") String user_id,
+                                            @Field("date") String date);
 }

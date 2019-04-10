@@ -31,7 +31,7 @@ public final class IndicatorService extends Service implements SharedPreferences
         public void run() {
 
             Constant.mLockCounter = countere;
-            Log.e(TAG, "run:----> " + countere);
+
             Toast.makeText(IndicatorService.this, "LOCK" + Count, Toast.LENGTH_SHORT).show();
             IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
             filter.addAction(Intent.ACTION_SCREEN_OFF);

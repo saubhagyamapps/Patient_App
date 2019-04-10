@@ -52,6 +52,7 @@ import app.food.patient_app.data.AppItem;
 import app.food.patient_app.data.DataManager;
 import app.food.patient_app.lockscreen.LockService;
 import app.food.patient_app.lockscreen.SharedPrefererenceCounter;
+import app.food.patient_app.model.ChangeWorkLocationModel;
 import app.food.patient_app.model.HomeLocationStoreModel;
 import app.food.patient_app.model.ImageCountModel;
 import app.food.patient_app.model.LocationChgangeModel;
@@ -93,6 +94,27 @@ public class AlarmReceiver extends BroadcastReceiver{
         context.getContentResolver().registerContentObserver(ContactsContract.Contacts.CONTENT_URI, true, new MyContentObserver(new Handler(), context));
         lockORunlock(context);
         requestLocationUpdates(context);
+    }
+
+    private void callWorkLocationAPI(Context context, String address, String lat, String log) {
+        Date todayDate;
+        String mCurrentDate;
+        todayDate = Calendar.getInstance().getTime();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        mCurrentDate = df.format(todayDate);
+        Constant.setSession(context);
+        Call<ChangeWorkLocationModel> call=Constant.apiService.StoreWorkLocarion(Constant.mUserId,address,lat,log,mCurrentDate);
+        call.enqueue(new Callback<ChangeWorkLocationModel>() {
+            @Override
+            public void onResponse(Call<ChangeWorkLocationModel> call, Response<ChangeWorkLocationModel> response) {
+                Log.e(TAG, "onResponse:---work location " );
+            }
+
+            @Override
+            public void onFailure(Call<ChangeWorkLocationModel> call, Throwable t) {
+                Log.e(TAG, "onFailure: :---work location "+t.getMessage() );
+            }
+        });
     }
 
     private void lockORunlock(Context context) {
@@ -355,6 +377,8 @@ public class AlarmReceiver extends BroadcastReceiver{
 
                 LocationChangeAPICALL(context, address.replace(state+postalCode+","+country,""), LATITUDE, LONGITUDE);
                 StoreHomeAddress(context,address, String.valueOf(LATITUDE),String.valueOf(LONGITUDE));
+                callWorkLocationAPI(context,address, String.valueOf(LATITUDE),String.valueOf(LONGITUDE));
+
             }
         } catch (IOException e) {
             e.printStackTrace();
