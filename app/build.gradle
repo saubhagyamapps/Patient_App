@@ -70,5 +70,7 @@ dependencies {
 
     implementation 'com.libRG:customtextview:2.1'
 
+    implementation 'com.budiyev.android:circular-progress-bar:1.2.2'
+
 }
 apply plugin: 'com.google.gms.google-services'

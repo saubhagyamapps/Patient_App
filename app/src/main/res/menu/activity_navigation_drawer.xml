@@ -31,6 +31,10 @@
             android:id="@+id/nav_Voice"
             android:icon="@drawable/ic_menu_gallery"
             android:title="Voice Analyzer" />
+        <item
+            android:id="@+id/nav_work_location"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="Work Location" />
 
     </group>
 

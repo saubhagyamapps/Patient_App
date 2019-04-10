@@ -52,6 +52,7 @@ import app.food.patient_app.fragment.GetCurrentLocationFragment;
 import app.food.patient_app.fragment.GoogleFitDataFragment;
 import app.food.patient_app.fragment.MoodCalendarFragment;
 import app.food.patient_app.fragment.ResetPasswordFragment;
+import app.food.patient_app.fragment.WorkLocationFragment;
 import app.food.patient_app.lockscreen.LockScreenCountActivity;
 import app.food.patient_app.model.CalllogsListModel;
 import app.food.patient_app.model.RemainingCallModel;
@@ -251,6 +252,12 @@ public class NavigationActivity extends AppCompatActivity
 
             //fragment = new VoiceAnalizerFragment();
             startActivity(new Intent(getApplicationContext(), LockScreenCountActivity.class));
+
+        }
+        else if (id == R.id.nav_work_location) {
+
+            fragment = new WorkLocationFragment();
+           // startActivity(new Intent(getApplicationContext(), LockScreenCountActivity.class));
 
         }
         if (fragment != null) {

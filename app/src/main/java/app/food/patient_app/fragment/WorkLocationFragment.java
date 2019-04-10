@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -51,10 +52,7 @@ import java.util.List;
 import java.util.Locale;
 
 import app.food.patient_app.R;
-import app.food.patient_app.adapter.LocationAddressTimeAdepter;
 import app.food.patient_app.adapter.PlaceArrayAdapter;
-import app.food.patient_app.model.AddressTimeModel;
-import app.food.patient_app.model.GetHomeLocationModel;
 import app.food.patient_app.model.HomeLocationStoreModel;
 import app.food.patient_app.model.StoreCurrentHomeAddressModel;
 import app.food.patient_app.util.Constant;
@@ -63,9 +61,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-
-public class GetCurrentLocationFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
-    private static final String TAG = "MainActivity";
+public class WorkLocationFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks{
+    View mView;
+    private static final String TAG = "WorkLocationFragment";
     private static final int GOOGLE_API_CLIENT_ID = 0;
     private static final LatLngBounds BOUNDS_MOUNTAIN_VIEW = new LatLngBounds(new LatLng(23.63936, 68.14712), new LatLng(28.20453, 97.34466));
     int FLAG = 1;
@@ -73,14 +71,13 @@ public class GetCurrentLocationFragment extends Fragment implements OnMapReadyCa
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
     private PlaceArrayAdapter mPlaceArrayAdapter;
-    View mView;
-    private AutoCompleteTextView mAutocompleteTextViewTo, mAutocompleteTextViewFrom;
+    private AutoCompleteTextView mAutocompleteTextViewTo_workLocation, mAutocompleteTextViewFrom;
     private double mStartlatitude, mStartlongitude;
 
-    RelativeLayout locationView;
-    Button btnEditAddress, btnSave;
-    RecyclerView recycleviewLocation;
-    TextView txtAddress, txtAddressHome, txtTime, txtDate;
+    private RelativeLayout locationView;
+    private Button btnEditAddress, btnSave;
+    private RecyclerView recycleviewLocation;
+    private TextView txtAddress, txtAddressHome, txtTime, txtDate;
     static float dist;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -116,7 +113,6 @@ public class GetCurrentLocationFragment extends Fragment implements OnMapReadyCa
             Log.i("Location", "Fetching details for ID: " + item.placeId);
         }
     };
-
     public void getAddress(Context context, double LATITUDE, double LONGITUDE) {
         FLAG = 1;
         //Set Address
@@ -138,10 +134,12 @@ public class GetCurrentLocationFragment extends Fragment implements OnMapReadyCa
                 Log.d(TAG, "getAddress:  state" + state);
                 Log.d(TAG, "getAddress:  postalCode" + postalCode);
                 Log.d(TAG, "getAddress:  knownName" + knownName);
-                mAutocompleteTextViewTo.setText(address);
+                mAutocompleteTextViewTo_workLocation.setText(address);
+
+                txtAddress.setText(address);
                 Log.e(TAG, " only city address----->" + address.replace(", " + state, "").replace(postalCode + ",", "").replace(country, ""));
-                StoreCurrentHomeAddress(address, String.valueOf(LATITUDE), String.valueOf(LONGITUDE));
-                StoreHomeAddress(address, String.valueOf(LATITUDE), String.valueOf(LONGITUDE));
+              //  StoreCurrentWorkAddress(address, String.valueOf(LATITUDE), String.valueOf(LONGITUDE));
+              //  StoreWorkAddress(address, String.valueOf(LATITUDE), String.valueOf(LONGITUDE));
 
             }
         } catch (IOException e) {
@@ -151,8 +149,7 @@ public class GetCurrentLocationFragment extends Fragment implements OnMapReadyCa
         }
         return;
     }
-
-    private void StoreHomeAddress(String address, String LATITUDE, String LONGITUDE) {
+    private void StoreWorkAddress(String address, String LATITUDE, String LONGITUDE) {
         Date todayDate;
         String mCurrentDate;
         todayDate = Calendar.getInstance().getTime();
@@ -173,13 +170,14 @@ public class GetCurrentLocationFragment extends Fragment implements OnMapReadyCa
         });
     }
 
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mView = inflater.inflate(R.layout.fragment_get_current_location, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        mView = inflater.inflate(R.layout.fragment_work_location, container, false);
         Constant.setSession(getActivity());
-        getHoemLocationAPICALL();
         getActivity().startService(new Intent(getActivity(), TrackerService.class));
+
         initialization();
         requestLocationUpdates();
         distance(23.077629f, 72.505712f, 23.077777f, 72.504929f);
@@ -189,9 +187,8 @@ public class GetCurrentLocationFragment extends Fragment implements OnMapReadyCa
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getActivity().setTitle("Location List");
+        getActivity().setTitle("Work Location");
     }
-
     public static float distance(float lat1, float lng1, float lat2, float lng2) {
         double earthRadius = 6371000; //meters
         double dLat = Math.toRadians(lat2 - lat1);
@@ -204,34 +201,6 @@ public class GetCurrentLocationFragment extends Fragment implements OnMapReadyCa
         Log.e(TAG, "distance--------> " + dist);
         return dist;
     }
-
-    private void getHoemLocationAPICALL() {
-        txtAddress = mView.findViewById(R.id.txtAddress);
-        locationView = mView.findViewById(R.id.locationView);
-        Call<GetHomeLocationModel> modelCall = Constant.apiService.getHomeLocation(Constant.mUserId);
-        modelCall.enqueue(new Callback<GetHomeLocationModel>() {
-            @Override
-            public void onResponse(Call<GetHomeLocationModel> call, Response<GetHomeLocationModel> response) {
-                if (response.body().getStatus().equals("0")) {
-                    locationView.setVisibility(View.GONE);
-                    txtAddress.setVisibility(View.VISIBLE);
-                    Constant.mHomeLat = response.body().getResult().get(0).getLatitude();
-                    Constant.mHomeLong = response.body().getResult().get(0).getLongitude();
-                    txtAddress.setText(response.body().getResult().get(0).getAddress());
-                } else {
-                    locationView.setVisibility(View.VISIBLE);
-                    txtAddress.setVisibility(View.GONE);
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<GetHomeLocationModel> call, Throwable t) {
-
-            }
-        });
-    }
-
     private void initialization() {
 
         btnEditAddress = mView.findViewById(R.id.btnEditAddress);
@@ -239,8 +208,10 @@ public class GetCurrentLocationFragment extends Fragment implements OnMapReadyCa
         txtAddressHome = mView.findViewById(R.id.txtAddressHome);
         txtTime = mView.findViewById(R.id.txtTime);
         txtDate = mView.findViewById(R.id.txtDate);
+        txtAddress = mView.findViewById(R.id.txtAddress);
+        locationView =mView.findViewById(R.id.locationView);
         mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        recycleviewLocation.setLayoutManager(mLayoutManager);
+       // recycleviewLocation.setLayoutManager(mLayoutManager);
         btnSave = mView.findViewById(R.id.btnSave);
         locationView.setVisibility(View.GONE);
         mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
@@ -248,58 +219,24 @@ public class GetCurrentLocationFragment extends Fragment implements OnMapReadyCa
                 .enableAutoManage(getActivity(), GOOGLE_API_CLIENT_ID, this)
                 .addConnectionCallbacks(this)
                 .build();
-        mAutocompleteTextViewTo = (AutoCompleteTextView) mView.findViewById(R.id.autoCompleteTextViewTO);
+        mAutocompleteTextViewTo_workLocation = (AutoCompleteTextView) mView.findViewById(R.id.autoCompleteTextViewTO_worklocation);
 
         imageViewLocation = mView.findViewById(R.id.imgLocation);
-        mAutocompleteTextViewTo.setThreshold(0);
-        mAutocompleteTextViewTo.setOnItemClickListener(mAutocompleteClickListenerTo);
+        mAutocompleteTextViewTo_workLocation.setThreshold(0);
+        mAutocompleteTextViewTo_workLocation.setOnItemClickListener(mAutocompleteClickListenerTo);
         mPlaceArrayAdapter = new PlaceArrayAdapter(getActivity(), R.layout.list_view, BOUNDS_MOUNTAIN_VIEW, null, R.drawable.ic_location);
-        mAutocompleteTextViewTo.setAdapter(mPlaceArrayAdapter);
+        mAutocompleteTextViewTo_workLocation.setAdapter(mPlaceArrayAdapter);
         txtDate.setText(Constant.currentDate());
-        editButtonClick();
-        AddressAndTimeListAPICALL();
+         editButtonClick();
+       // AddressAndTimeListAPICALL();
 
     }
-
-    private void AddressAndTimeListAPICALL() {
-        Date todayDate;
-        String mCurrentDate;
-        todayDate = Calendar.getInstance().getTime();
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-        mCurrentDate = df.format(todayDate);
-        Constant.setSession(getActivity());
-        Call<AddressTimeModel> timeModelCall = Constant.apiService.getAddressTime(Constant.mUserId, mCurrentDate);
-        timeModelCall.enqueue(new Callback<AddressTimeModel>() {
-            @Override
-            public void onResponse(Call<AddressTimeModel> call, Response<AddressTimeModel> response) {
-                try {
-                    txtAddressHome.setText(response.body().getHome_result().get(0).getAddress());
-                    txtTime.setText(response.body().getHome_result().get(0).getTime_difference());
-                    Log.e("Size of getdata", response.body().getResult().size() + "");
-                    mAdapter = new LocationAddressTimeAdepter(response.body().getResult(), getActivity());
-                    recycleviewLocation.setHasFixedSize(true);
-                    mAdapter.notifyDataSetChanged();
-                    recycleviewLocation.setAdapter(mAdapter);
-                }catch (Exception e){
-
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<AddressTimeModel> call, Throwable t) {
-
-            }
-        });
-    }
-
     @Override
     public void onPause() {
         super.onPause();
         mGoogleApiClient.stopAutoManage(getActivity());
         mGoogleApiClient.disconnect();
     }
-
     private void editButtonClick() {
         txtAddress.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -333,7 +270,7 @@ public class GetCurrentLocationFragment extends Fragment implements OnMapReadyCa
         });
     }
 
-    public void StoreCurrentHomeAddress(String address, String lat, String log) {
+    public void StoreCurrentWorkAddress(String address, String lat, String log) {
         txtAddress.setText(address);
         Call<StoreCurrentHomeAddressModel> modelCall = Constant.apiService.storeLocation(Constant.mUserId, address, lat, log);
         modelCall.enqueue(new Callback<StoreCurrentHomeAddressModel>() {
@@ -350,7 +287,6 @@ public class GetCurrentLocationFragment extends Fragment implements OnMapReadyCa
             }
         });
     }
-
     private void requestLocationUpdates() {
         LocationRequest request = new LocationRequest();
         request.setInterval(100);
@@ -383,6 +319,7 @@ public class GetCurrentLocationFragment extends Fragment implements OnMapReadyCa
                             public void onClick(View v) {
                                 getAddress(getActivity(), mStartlatitude, mStartlongitude);
                                 locationView.setVisibility(View.GONE);
+                                txtAddress.setVisibility(View.VISIBLE);
                             }
                         });
                     }
@@ -391,17 +328,24 @@ public class GetCurrentLocationFragment extends Fragment implements OnMapReadyCa
         }
     }
 
-
     @Override
-    public void onConnected(Bundle bundle) {
+    public void onConnected(@Nullable Bundle bundle) {
         mPlaceArrayAdapter.setGoogleApiClient(mGoogleApiClient);
 
         Log.i("Location", "Google Places API connected.");
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+        mPlaceArrayAdapter.setGoogleApiClient(null);
+
+        Log.e("Location", "Google Places API connection suspended.");
 
     }
 
     @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.e("Location", "Google Places API connection failed with error code: "
                 + connectionResult.getErrorCode());
 
@@ -412,16 +356,7 @@ public class GetCurrentLocationFragment extends Fragment implements OnMapReadyCa
     }
 
     @Override
-    public void onConnectionSuspended(int i) {
-        mPlaceArrayAdapter.setGoogleApiClient(null);
-
-        Log.e("Location", "Google Places API connection suspended.");
-    }
-
-    @Override
     public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
+
     }
-
-
 }
